@@ -1,0 +1,21 @@
+/*
+Theme Name: GarageRisteriet
+Theme URI: https://github.com/kristianwind/garageristeriet-theme
+Author: GarageRisteriet
+Author URI: https://garageristeriet.dk
+Description: Nordisk minimalistisk blok-tema (Full Site Editing) til GarageRisteriet – dansk specialkaffe-risteri med WooCommerce-shop. Onepager-forside bygget af block patterns, lokalt hostede webfonts og automatiske opdateringer via GitHub Releases.
+Version: 1.0.0
+Requires at least: 6.5
+Tested up to: 6.8
+Requires PHP: 7.4
+License: GNU General Public License v2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: garageristeriet
+Tags: full-site-editing, block-patterns, e-commerce, one-column, custom-colors, custom-typography
+Update URI: https://github.com/kristianwind/garageristeriet-theme
+*/
+
+/*
+Al design er defineret i theme.json.
+Supplerende styles ligger i assets/css/garageristeriet.css.
+*/

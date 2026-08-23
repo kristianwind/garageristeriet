@@ -1,0 +1,318 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/theme.json",
+	"version": 3,
+	"settings": {
+		"appearanceTools": true,
+		"useRootPaddingAwareAlignments": true,
+		"layout": {
+			"contentSize": "680px",
+			"wideSize": "1180px"
+		},
+		"color": {
+			"defaultPalette": false,
+			"defaultGradients": false,
+			"gradients": [],
+			"palette": [
+				{ "slug": "base", "name": "Råhvid", "color": "#FAF7F2" },
+				{ "slug": "surface", "name": "Havre", "color": "#F1EAE0" },
+				{ "slug": "sand", "name": "Sand", "color": "#E7DCCB" },
+				{ "slug": "primary", "name": "Kaffebrun", "color": "#6F4E37" },
+				{ "slug": "primary-dark", "name": "Mørk kaffebrun", "color": "#5A3E2B" },
+				{ "slug": "contrast", "name": "Espresso", "color": "#2C211B" },
+				{ "slug": "sage", "name": "Salvie", "color": "#69755C" },
+				{ "slug": "sage-light", "name": "Lys salvie", "color": "#E9ECE3" }
+			]
+		},
+		"spacing": {
+			"defaultSpacingSizes": false,
+			"units": [ "px", "em", "rem", "vh", "vw", "%" ],
+			"spacingSizes": [
+				{ "slug": "20", "name": "XS", "size": "0.75rem" },
+				{ "slug": "30", "name": "S", "size": "clamp(1rem, 2vw, 1.5rem)" },
+				{ "slug": "40", "name": "M", "size": "clamp(1.5rem, 3vw, 2.5rem)" },
+				{ "slug": "50", "name": "L", "size": "clamp(2.5rem, 5vw, 4rem)" },
+				{ "slug": "60", "name": "XL (sektion)", "size": "clamp(4.5rem, 9vw, 7rem)" },
+				{ "slug": "70", "name": "XXL", "size": "clamp(6rem, 12vw, 9rem)" }
+			]
+		},
+		"typography": {
+			"fluid": true,
+			"writingMode": false,
+			"fontFamilies": [
+				{
+					"slug": "body",
+					"name": "Inter (brødtekst)",
+					"fontFamily": "\"Inter\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+					"fontFace": [
+						{
+							"fontFamily": "Inter",
+							"fontStyle": "normal",
+							"fontWeight": "400",
+							"fontDisplay": "swap",
+							"src": [ "file:./assets/fonts/inter-latin-400-normal.woff2" ]
+						},
+						{
+							"fontFamily": "Inter",
+							"fontStyle": "normal",
+							"fontWeight": "500",
+							"fontDisplay": "swap",
+							"src": [ "file:./assets/fonts/inter-latin-500-normal.woff2" ]
+						},
+						{
+							"fontFamily": "Inter",
+							"fontStyle": "normal",
+							"fontWeight": "600",
+							"fontDisplay": "swap",
+							"src": [ "file:./assets/fonts/inter-latin-600-normal.woff2" ]
+						}
+					]
+				},
+				{
+					"slug": "heading",
+					"name": "Fraunces (overskrifter)",
+					"fontFamily": "\"Fraunces\", Georgia, serif",
+					"fontFace": [
+						{
+							"fontFamily": "Fraunces",
+							"fontStyle": "normal",
+							"fontWeight": "500",
+							"fontDisplay": "swap",
+							"src": [ "file:./assets/fonts/fraunces-latin-500-normal.woff2" ]
+						},
+						{
+							"fontFamily": "Fraunces",
+							"fontStyle": "italic",
+							"fontWeight": "500",
+							"fontDisplay": "swap",
+							"src": [ "file:./assets/fonts/fraunces-latin-500-italic.woff2" ]
+						},
+						{
+							"fontFamily": "Fraunces",
+							"fontStyle": "normal",
+							"fontWeight": "600",
+							"fontDisplay": "swap",
+							"src": [ "file:./assets/fonts/fraunces-latin-600-normal.woff2" ]
+						}
+					]
+				}
+			],
+			"fontSizes": [
+				{ "slug": "small", "name": "Lille", "size": "0.875rem", "fluid": false },
+				{ "slug": "medium", "name": "Normal", "size": "1.0625rem", "fluid": { "min": "1rem", "max": "1.0625rem" } },
+				{ "slug": "large", "name": "Stor", "size": "1.375rem", "fluid": { "min": "1.2rem", "max": "1.375rem" } },
+				{ "slug": "x-large", "name": "Ekstra stor", "size": "2rem", "fluid": { "min": "1.6rem", "max": "2rem" } },
+				{ "slug": "xx-large", "name": "Kæmpe", "size": "2.75rem", "fluid": { "min": "2.1rem", "max": "2.75rem" } },
+				{ "slug": "xxx-large", "name": "Hero", "size": "4rem", "fluid": { "min": "2.6rem", "max": "4rem" } }
+			]
+		},
+		"border": {
+			"radius": true
+		},
+		"custom": {
+			"headerHeight": "84px",
+			"radius": {
+				"small": "4px",
+				"medium": "6px",
+				"large": "8px"
+			},
+			"transition": "0.2s ease"
+		}
+	},
+	"styles": {
+		"color": {
+			"background": "var:preset|color|base",
+			"text": "var:preset|color|contrast"
+		},
+		"typography": {
+			"fontFamily": "var:preset|font-family|body",
+			"fontSize": "var:preset|font-size|medium",
+			"fontWeight": "400",
+			"lineHeight": "1.7"
+		},
+		"spacing": {
+			"blockGap": "1.5rem",
+			"padding": {
+				"left": "var:preset|spacing|30",
+				"right": "var:preset|spacing|30"
+			}
+		},
+		"elements": {
+			"heading": {
+				"typography": {
+					"fontFamily": "var:preset|font-family|heading",
+					"fontWeight": "500",
+					"lineHeight": "1.15",
+					"letterSpacing": "-0.01em"
+				},
+				"color": {
+					"text": "var:preset|color|contrast"
+				}
+			},
+			"h1": {
+				"typography": {
+					"fontSize": "var:preset|font-size|xxx-large"
+				}
+			},
+			"h2": {
+				"typography": {
+					"fontSize": "var:preset|font-size|xx-large"
+				}
+			},
+			"h3": {
+				"typography": {
+					"fontSize": "var:preset|font-size|x-large"
+				}
+			},
+			"h4": {
+				"typography": {
+					"fontSize": "var:preset|font-size|large"
+				}
+			},
+			"link": {
+				"color": {
+					"text": "var:preset|color|contrast"
+				},
+				":hover": {
+					"color": {
+						"text": "var:preset|color|primary"
+					}
+				}
+			},
+			"button": {
+				"color": {
+					"background": "var:preset|color|primary",
+					"text": "var:preset|color|base"
+				},
+				"typography": {
+					"fontFamily": "var:preset|font-family|body",
+					"fontSize": "1rem",
+					"fontWeight": "500"
+				},
+				"border": {
+					"radius": "6px",
+					"width": "0"
+				},
+				"spacing": {
+					"padding": {
+						"top": "0.8rem",
+						"bottom": "0.8rem",
+						"left": "1.6rem",
+						"right": "1.6rem"
+					}
+				},
+				":hover": {
+					"color": {
+						"background": "var:preset|color|primary-dark",
+						"text": "var:preset|color|base"
+					}
+				},
+				":focus": {
+					"color": {
+						"background": "var:preset|color|primary-dark",
+						"text": "var:preset|color|base"
+					}
+				}
+			},
+			"caption": {
+				"typography": {
+					"fontSize": "var:preset|font-size|small"
+				},
+				"color": {
+					"text": "var:preset|color|sage"
+				}
+			}
+		},
+		"blocks": {
+			"core/site-title": {
+				"typography": {
+					"fontFamily": "var:preset|font-family|heading",
+					"fontSize": "1.35rem",
+					"fontWeight": "600",
+					"letterSpacing": "-0.01em"
+				},
+				"elements": {
+					"link": {
+						"color": { "text": "var:preset|color|contrast" },
+						":hover": { "color": { "text": "var:preset|color|primary" } },
+						"typography": { "textDecoration": "none" }
+					}
+				}
+			},
+			"core/navigation": {
+				"typography": {
+					"fontSize": "0.95rem",
+					"fontWeight": "500"
+				}
+			},
+			"core/quote": {
+				"typography": {
+					"fontFamily": "var:preset|font-family|heading",
+					"fontStyle": "italic",
+					"fontSize": "var:preset|font-size|x-large",
+					"lineHeight": "1.4"
+				},
+				"border": {
+					"width": "0"
+				}
+			},
+			"core/pullquote": {
+				"typography": {
+					"fontFamily": "var:preset|font-family|heading",
+					"fontStyle": "italic",
+					"fontSize": "var:preset|font-size|x-large",
+					"lineHeight": "1.4"
+				},
+				"border": {
+					"width": "0"
+				}
+			},
+			"core/separator": {
+				"color": {
+					"text": "var:preset|color|sand"
+				},
+				"border": {
+					"width": "1px"
+				}
+			},
+			"core/image": {
+				"border": {
+					"radius": "8px"
+				}
+			},
+			"core/cover": {
+				"spacing": {
+					"padding": {
+						"left": "var:preset|spacing|30",
+						"right": "var:preset|spacing|30"
+					}
+				}
+			},
+			"woocommerce/product-price": {
+				"color": {
+					"text": "var:preset|color|primary"
+				},
+				"typography": {
+					"fontWeight": "500"
+				}
+			},
+			"woocommerce/mini-cart": {
+				"typography": {
+					"fontSize": "1rem"
+				}
+			}
+		}
+	},
+	"templateParts": [
+		{
+			"name": "header",
+			"title": "Header",
+			"area": "header"
+		},
+		{
+			"name": "footer",
+			"title": "Footer",
+			"area": "footer"
+		}
+	],
+	"customTemplates": []
+}

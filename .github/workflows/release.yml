@@ -1,0 +1,48 @@
+name: Release
+
+# Bygger en ren tema-zip og uploader den som release-asset,
+# når der pushes et tag på formen v1.2.3.
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Tjek at version i style.css matcher tagget
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          CSS_VERSION="$(grep -i '^Version:' style.css | head -1 | awk '{print $2}')"
+          echo "Tag: $TAG_VERSION – style.css: $CSS_VERSION"
+          if [ "$TAG_VERSION" != "$CSS_VERSION" ]; then
+            echo "::error::Version i style.css ($CSS_VERSION) matcher ikke tagget ($TAG_VERSION). Bump versionen før du tagger."
+            exit 1
+          fi
+
+      - name: Byg zip med korrekt mappenavn
+        run: |
+          mkdir -p build/garageristeriet
+          rsync -a \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='build' \
+            --exclude='garageristeriet.zip' \
+            --exclude='.DS_Store' \
+            ./ build/garageristeriet/
+          cd build
+          zip -rq garageristeriet.zip garageristeriet
+          unzip -l garageristeriet.zip | head -20
+
+      - name: Opret GitHub Release med zip som asset
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/garageristeriet.zip
+          generate_release_notes: true
