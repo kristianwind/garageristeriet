@@ -8,7 +8,7 @@ Description: Warmt nordisk / japandi blocktheme (FSE) til GarageRisteriet - spec
 Requires at least: 6.5
 Tested up to: 6.8
 Requires PHP: 7.4
-Version: 1.3.0
+Version: 1.3.1
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: garageristeriet
@@ -383,3 +383,26 @@ box-sizing:border-box}
 .gr-butik-cols{grid-template-columns:1fr}
 .gr-butik-cols figure.wp-block-image img{height:auto;aspect-ratio:4/3}
 }
+
+/* ─ 1.3.1: produktkort i ens hoejde, lavere knap ───────────
+   Maalt paa forsiden foer: raekke 1 var 583px og raekke 2 641px, fordi
+   "Økologisk Papua Ny Guinea Korofeigu A/X" fylder to titellinjer. Grid
+   giver hver raekke sin egen hoejde, saa kort i FORSKELLIGE raekker blev
+   ikke ens. grid-auto-rows:1fr giver alle raekker samme hoejde som den
+   hoejeste. */
+.woocommerce ul.products,.woocommerce-page ul.products{grid-auto-rows:1fr}
+.woocommerce ul.products li.product{height:100%}
+
+/* Knappen var 70px hoej — Woos block-button-styles laegger egen padding og
+   min-height oveni temaets 12px. Den skal vaere en diskret sekundaer knap,
+   ikke sektionens tungeste element. */
+.woocommerce ul.products li.product .button,
+.woocommerce ul.products li.product .added_to_cart{
+padding:9px 16px!important;min-height:0!important;line-height:1.35!important;
+font-size:var(--fs-xs)}
+
+/* Titlen faar plads til to linjer uden at skubbe knappen skaevt: knappen
+   sidder i bunden via margin-top:auto, og den plads titlen ikke bruger,
+   bliver tom i stedet for at flytte noget. */
+.woocommerce ul.products li.product .woocommerce-loop-product__title{
+min-height:calc(2 * 1.22em)}

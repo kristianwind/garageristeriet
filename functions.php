@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'GR_VERSION', '1.3.0' );
+define( 'GR_VERSION', '1.3.1' );
 
 /**
  * Temaunderstøttelse.
@@ -67,10 +67,19 @@ add_filter( 'loop_shop_columns', 'gr_loop_columns' );
 /**
  * Danske knaptekster i WooCommerce-loopet.
  */
-function gr_add_to_cart_text() {
+function gr_add_to_cart_text( $text, $product = null ) {
+	// Et variabelt produkt kan ikke laegges i kurv fra griddet — knappen er et
+	// link til produktsiden, hvor vaegt og formaling vaelges. Saa maa der ikke
+	// staa "Laeg i kurv" paa den; det lover noget klikket ikke goer.
+	if ( $product instanceof WC_Product
+		&& ( $product->is_type( 'variable' ) || ! $product->is_purchasable() || ! $product->supports( 'ajax_add_to_cart' ) ) ) {
+		return __( 'Læs mere', 'garageristeriet' );
+	}
 	return __( 'Læg i kurv', 'garageristeriet' );
 }
-add_filter( 'woocommerce_product_add_to_cart_text', 'gr_add_to_cart_text' );
+// 10, 2 — ikke bare 10. Uden antallet kommer $product aldrig frem, og saa
+// falder hver eneste knap tilbage paa "Laeg i kurv" uden at noget fejler.
+add_filter( 'woocommerce_product_add_to_cart_text', 'gr_add_to_cart_text', 10, 2 );
 
 /**
  * Ingen Google Fonts udefra (GDPR) - fonte hostes lokalt via theme.json.
