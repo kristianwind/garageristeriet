@@ -47,6 +47,13 @@ jobs:
   publish:
     needs: test
     if: github.server_url == 'https://github.com'
+    # GITHUB_TOKEN er read-only som standard på dette repo, og at oprette en
+    # release er en skrivning. Uden dette fejler action-gh-release med
+    # "403 Resource not accessible by integration" — en fejl der peger på
+    # token'et og ikke på det der mangler. Kun her, ikke på test-jobbet:
+    # det skal ikke kunne skrive noget.
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
