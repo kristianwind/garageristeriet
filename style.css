@@ -8,7 +8,7 @@ Description: Warmt nordisk / japandi blocktheme (FSE) til GarageRisteriet - spec
 Requires at least: 6.5
 Tested up to: 6.8
 Requires PHP: 7.4
-Version: 1.2.1
+Version: 1.2.2
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: garageristeriet
@@ -386,3 +386,40 @@ h1{font-size:var(--fs-2xl)}
 .woocommerce ul.products li.product.product-type-variable > .price{display:none!important}
 /* simple produkter: knappen skal ikke svaeve midt i kortet */
 .woocommerce ul.products li.product .button,.woocommerce ul.products li.product .added_to_cart{margin:auto var(--space-6) var(--space-6)!important;align-self:flex-start}
+
+/* ─ Butik som WordPress-kolonner ───────────────────────────
+   .gr-butik er et grid med align-items:stretch, saa de tre bokse faar samme
+   hoejde af sig selv. Det holder kun saa laenge de er soeskende i ÉN
+   html-blok. Skal den tredje vaere en rigtig Billede-blok — saa fotoet kan
+   skiftes i editoren — maa sektionen deles i en Kolonner-blok.
+
+   Loesningen er at give Kolonner-blokken SAMME grid som .gr-butik frem for
+   at arbejde med WordPress' flex. Maalt: med flex blev kortene 377px hoeje
+   inde i kolonner paa 319px — indholdet floed ud over, fordi height:100% mod
+   en forael der uden bestemt hoejde bliver til auto. Grid med stretch har
+   ikke det problem; det er samme mekanik som .gr-butik og .gr-steps.
+
+   Saet klassen gr-butik-cols paa KOLONNER-blokken, ikke paa kolonnerne. */
+.gr-butik-cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+gap:var(--space-7);align-items:stretch}
+.gr-butik-cols > .wp-block-column{display:flex;flex-direction:column;flex-basis:auto!important}
+.gr-butik-cols > .wp-block-column > *{flex:1;width:100%;margin-block:0}
+.gr-butik-cols .gr-card{display:flex;flex-direction:column}
+.gr-butik-cols .gr-ph{min-height:280px}
+
+/* Billedet i rammen: samme kant og hjoerneradius som .gr-card og .gr-ph.
+   object-fit:cover fordi hoejden nu kommer fra soeskende og ikke fra
+   billedets eget sideforhold — uden den ville fotoet blive trukket skaevt.
+   Brug IKKE gr-ph--4x3 eller anden aspect-ratio her; den laaser hoejden til
+   bredden og kaemper mod straekningen. */
+.gr-butik-cols figure.wp-block-image{margin:0;display:flex}
+.gr-butik-cols figure.wp-block-image img{display:block;width:100%;height:100%;
+object-fit:cover;border:1px solid var(--border-subtle);border-radius:var(--radius-md);
+box-sizing:border-box}
+
+/* Stakket falder hoejden vaek, og saa skal fotoet have sit eget forhold igen.
+   1023px matcher det breakpoint .gr-butik selv bruger. */
+@media (max-width:1023px){
+.gr-butik-cols{grid-template-columns:1fr}
+.gr-butik-cols figure.wp-block-image img{height:auto;aspect-ratio:4/3}
+}
