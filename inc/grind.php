@@ -41,7 +41,7 @@ function gr_grind_field( $uid = 'gr-grind' ) {
 	$options = gr_grind_options();
 	$id      = $uid . '-formaling';
 	?>
-	<div class="gr-field gr-variations__grind">
+	<div class="gr-field gr-grind">
 		<label class="gr-field__label" for="<?php echo esc_attr( $id ); ?>">
 			<?php echo esc_html__( 'Formaling', 'garageristeriet' ); ?>
 		</label>

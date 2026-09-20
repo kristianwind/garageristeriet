@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'GR_VERSION', '1.2.2' );
+define( 'GR_VERSION', '1.3.0' );
 
 /**
  * Temaunderstøttelse.
@@ -140,4 +140,3 @@ add_filter( 'woocommerce_price_format', 'gr_price_format', 10, 2 );
 
 require_once get_template_directory() . '/inc/updater.php';
 require_once get_template_directory() . '/inc/grind.php';
-require_once get_template_directory() . '/inc/loop-variations.php';
