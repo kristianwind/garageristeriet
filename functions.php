@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'GR_VERSION', '1.3.3' );
+define( 'GR_VERSION', '1.3.4' );
 
 /**
  * Temaunderstøttelse.
@@ -27,15 +27,44 @@ function gr_setup() {
 		'single_image_width'    => 1400,
 		'product_grid'          => array( 'default_columns' => 4, 'min_columns' => 1, 'max_columns' => 4 ),
 	) );
-	// 1.3.3: ingen zoom. Lup-paa-hover er en desktop-gestus der ikke findes paa
-	// en telefon, og den staar i vejen for et klik paa billedet. Lightbox og
-	// slider bliver: de virker begge steder.
+	// Zoom staar med vilje ikke her — se gr_disable_product_zoom() nedenfor.
+	// At udelade den er IKKE nok: WooCommerce tilfoejer den selv til ethvert
+	// bloktema.
 	add_theme_support( 'wc-product-gallery-lightbox' );
 	add_theme_support( 'wc-product-gallery-slider' );
 
 	load_theme_textdomain( 'garageristeriet', get_template_directory() . '/languages' );
 }
 add_action( 'after_setup_theme', 'gr_setup' );
+
+/**
+ * Slaa lup-paa-hover fra paa produktbilleder.
+ *
+ * 1.3.3 fjernede bare temaets add_theme_support( 'wc-product-gallery-zoom' ),
+ * og zoomen blev siddende. Grunden er at WooCommerce selv tilfoejer alle tre
+ * gallerifunktioner til ethvert bloktema — WC_Template_Loader::init() paa
+ * 'init' prioritet 10 kalder add_support_for_product_page_gallery() uden at
+ * spoerge temaet. Et bloktema kan altsaa ikke slaa zoom fra ved at lade vaere
+ * med at bede om den; det skal aktivt tage den tilbage bagefter.
+ *
+ * Der skal to ting til, og de rammer hver sin halvdel:
+ *
+ *   1. Supporten fjernes paa 'init' prioritet 20 — efter WooCommerce. Det er
+ *      den, ProductImageGallery::enqueue_legacy_assets() laeser, saa
+ *      jquery.zoom.min.js bliver aldrig sat i koe.
+ *   2. Filteret saettes til false paa prioritet 20. Galleriblokken tvinger
+ *      'woocommerce_single_product_zoom_enabled' til __return_true paa
+ *      prioritet 10 ved HVER rendering, saa uden det her ville siden stadig
+ *      skrive "zoom_enabled":"1" i sine parametre — harmloest for JS'en, som
+ *      ogsaa tjekker om $.fn.zoom findes, men usandt i kildekoden.
+ *
+ * Lightbox og slider roeres ikke.
+ */
+function gr_disable_product_zoom() {
+	remove_theme_support( 'wc-product-gallery-zoom' );
+}
+add_action( 'init', 'gr_disable_product_zoom', 20 );
+add_filter( 'woocommerce_single_product_zoom_enabled', '__return_false', 20 );
 
 /**
  * Stilark.
