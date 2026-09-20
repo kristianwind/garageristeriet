@@ -4,10 +4,6 @@ branch: main
 Repo-rod = temarod. Temamappen ved installation hedder `garageristeriet` og
 maa aldrig omdoebes — mappenavnet ER temaets identitet.
 
-Skriveadgang: Claude Code paa serveren, arbejdsmappe
-`/root/rc/garageristeriet`. Den committer, pusher og saetter tags.
-Mappenavn og repo-navn maa gerne afvige — omdoeb ikke arbejdsmappen.
-
 ## Regler naar der skrives til repoet
 
 1. **Ingen `.otf` eller `.ttf`.** Repoet er offentligt og GPL-2.0. Kun `.woff2`

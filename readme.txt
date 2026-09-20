@@ -65,20 +65,31 @@ dagslys, eg, linned, mat keramik, kraftpapir, mørke bønner. Ingen HDR, ingen k
 
 == Ændringslog ==
 
+= 1.2.1 =
+* Versionsbump.
+
+= 1.2.0 =
+* Onepager-forside porteret fra designet: hero, mørkt USP-bånd, abonnement, butik.
+* Variantvælger som chips i produktgriddet.
+* Selvopdatering via GitHub Releases.
+* Frie fonte: Source Sans 3, Source Serif 4 og Anton under SIL OFL.
+
 = 1.0.0 =
 * Første udgivelse. Onepager-forside, WooCommerce-styling, tokens fra GarageRisteriet Design System.
 
-== Opdatering fra Gitea ==
+== Opdatering ==
 
-style.css har "Update URI: https://gitea.nolimit.dk/kw/garageristeriet-dist".
-inc/updates.php haenger paa filteret update_themes_gitea.nolimit.dk og svarer
-KUN naar $theme_stylesheet er "garageristeriet" (filteret deles med alle andre
-temaer paa samme host). Svarer feedet ikke, returneres den installerede version
-med tom package, saa temaet bliver i opdaterings-transienten.
+style.css har "Update URI: https://github.com/kristianwind/garageristeriet-theme".
+inc/updater.php haenger paa filteret update_themes_github.com og svarer KUN naar
+$theme_stylesheet er "garageristeriet" — filteret deles med alle andre temaer der
+opdaterer fra samme host, og uden den guard tilbyder vi vores release til et
+fremmed tema. Svarer feedet ikke, returneres den installerede version med tom
+package, saa temaet bliver i opdaterings-transienten og "Aktivér
+auto-opdateringer" ikke forsvinder fra skaermen.
 
-Release: tag kilde-repoet med vX.Y.Z (samme tal som Version i style.css).
-.gitea/workflows/release.yml bygger zip'en med oeverste mappe "garageristeriet"
-og lægger den paa kw/garageristeriet-dist (public) via RELEASE_TOKEN.
+Release: ret Version i style.css og GR_VERSION i functions.php til samme tal, og
+tag med vX.Y.Z. .github/workflows/release.yml verificerer at de tre matcher,
+bygger zip'en med oeverste mappe "garageristeriet" og laegger den paa releasen.
 
 Temamappen hedder "garageristeriet" og maa aldrig omdoebes — mappenavnet ER
 temaets identitet.
