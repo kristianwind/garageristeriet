@@ -1,27 +1,34 @@
 name: Release
 
+# Kontrollerne koerer paa HVER push og hver PR, ikke kun paa tags. En .otf, en
+# font uden licenstekst eller en readme der er bagud skal fanges naar den
+# committes — ikke foerst naar nogen udgiver, hvor den allerede har ligget
+# offentligt i dagevis.
 on:
   push:
+    branches:
+      - main
     tags:
       - 'v*'
+  pull_request:
 
 jobs:
-  # Ugated: koerer ogsaa paa Gitea, saa auto-merge kan laese resultatet.
+  # Ugated: skal ogsaa kunne koere paa en anden forge.
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Version i style.css skal matche tagget
+      - name: Statiske kontroller
+        # Tagget gives kun med naar der ER et tag; saa tjekker scriptet ogsaa
+        # at det matcher Version i style.css. ci/checks.sh kan koeres i
+        # haanden med samme argument.
         run: |
-          set -euo pipefail
-          TAG="${GITHUB_REF_NAME#v}"
-          CSS_VERSION=$(sed -n 's/^Version:[[:space:]]*//p' style.css | head -1 | tr -d '\r')
-          echo "tag=$TAG css=$CSS_VERSION"
-          test "$CSS_VERSION" = "$TAG"
-
-      - name: PHP-syntaks
-        run: find . -name '*.php' -not -path './.git/*' -print0 | xargs -0 -n1 php -l
+          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
+            ci/checks.sh "${GITHUB_REF_NAME}"
+          else
+            ci/checks.sh
+          fi
 
       - name: Byg zip og bevis mappenavnet
         run: |
@@ -42,16 +49,17 @@ jobs:
           name: theme-zip
           path: garageristeriet.zip
 
-  # Gated: action-gh-release publicerer til den forge der koerer den.
-  # Uden denne gate laver hvert tag ogsaa en halv release paa Gitea.
+  # Gated to gange: kun paa et tag, og kun paa GitHub. action-gh-release
+  # publicerer til den forge der koerer den, saa uden vaerts-gaten laver hvert
+  # tag en halv release paa en spejling.
   publish:
     needs: test
-    if: github.server_url == 'https://github.com'
-    # GITHUB_TOKEN er read-only som standard på dette repo, og at oprette en
+    if: startsWith(github.ref, 'refs/tags/v') && github.server_url == 'https://github.com'
+    # GITHUB_TOKEN er read-only som standard paa dette repo, og at oprette en
     # release er en skrivning. Uden dette fejler action-gh-release med
-    # "403 Resource not accessible by integration" — en fejl der peger på
-    # token'et og ikke på det der mangler. Kun her, ikke på test-jobbet:
-    # det skal ikke kunne skrive noget.
+    # "403 Resource not accessible by integration" — en fejl der peger paa
+    # token'et og ikke paa det der mangler. Kun her: test skal ikke kunne
+    # skrive noget.
     permissions:
       contents: write
     runs-on: ubuntu-latest
