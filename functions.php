@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'GR_VERSION', '1.3.4' );
+define( 'GR_VERSION', '1.3.5' );
 
 /**
  * Temaunderstøttelse.

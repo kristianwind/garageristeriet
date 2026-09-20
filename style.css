@@ -8,7 +8,7 @@ Description: Warmt nordisk / japandi blocktheme (FSE) til GarageRisteriet - spec
 Requires at least: 6.5
 Tested up to: 6.8
 Requires PHP: 7.4
-Version: 1.3.4
+Version: 1.3.5
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: garageristeriet
@@ -441,3 +441,85 @@ margin-left:0;margin-right:0}
    bevaegelse — logoet bliver staaende. Paa smalle skaerme fylder raekken
    allerede bredden ud, saa reglen goer ingenting der. */
 .gr-header .gr-nav{margin-left:auto}
+
+/* ─ 1.3.5: formularer ───────────────────────────────────────────────────
+   WPForms leverer sit eget stylesheet, og det vinder paa kaskaden: knappen
+   stod blaa selvom gr-btn sad paa den. Reglerne herunder haenger derfor paa
+   .wpforms-container, som er mere specifikt end pluginets egne selektorer.
+   Ingen !important udover paa knappen, hvor pluginet selv bruger den. */
+.wpforms-container{max-width:none;margin:0}
+.wpforms-container .wpforms-form{display:grid;gap:var(--space-6)}
+.wpforms-container .wpforms-field{padding:0}
+
+.wpforms-container .wpforms-field-label,
+.wpforms-container .wpforms-field-label-inline{
+font-family:var(--font-sans);font-size:var(--fs-2xs);font-weight:600;
+letter-spacing:var(--ls-eyebrow);text-transform:uppercase;color:var(--text-muted);
+margin:0 0 7px;display:block}
+.wpforms-container .wpforms-required-label{color:var(--gr-copper-500);border:0}
+
+/* Selve felterne arver temaets input-regler (linje 147) — her rettes kun det
+   pluginet tvinger igennem: egen hoejde, egen kant og egen skriftstoerrelse. */
+.wpforms-container input[type=text],
+.wpforms-container input[type=email],
+.wpforms-container input[type=tel],
+.wpforms-container textarea{
+font-size:var(--fs-base);border:1px solid var(--gr-latte-500);
+border-radius:var(--radius-sm);background:var(--surface-card);
+color:var(--text-body);padding:0 var(--space-5);min-height:48px;box-sizing:border-box}
+.wpforms-container textarea{padding:14px var(--space-5);min-height:132px;line-height:1.5}
+.wpforms-container input::placeholder,.wpforms-container textarea::placeholder{color:var(--text-subtle)}
+.wpforms-container input:focus,.wpforms-container textarea:focus{
+outline:2px solid var(--gr-cocoa-800);outline-offset:1px;border-color:var(--gr-cocoa-800)}
+
+.wpforms-container .wpforms-field-description{
+font-size:var(--fs-xs);color:var(--text-muted);margin:7px 0 0}
+
+/* Samtykkefeltet: afkrydsningen og teksten paa linje, teksten i broedtekst og
+   ikke i versaler — det er en saetning man skal laese, ikke en etiket. */
+.wpforms-container .wpforms-field-checkbox ul{list-style:none;margin:0;padding:0}
+.wpforms-container .wpforms-field-checkbox li{display:flex;align-items:flex-start;gap:12px}
+.wpforms-container .wpforms-field-checkbox input[type=checkbox]{
+appearance:none;-webkit-appearance:none;flex:none;width:22px;height:22px;margin:0;
+border:1px solid var(--gr-latte-500);border-radius:var(--radius-xs);
+background:var(--surface-card);cursor:pointer}
+.wpforms-container .wpforms-field-checkbox input[type=checkbox]:checked{
+background:var(--gr-espresso-950);border-color:var(--gr-espresso-950)}
+.wpforms-container .wpforms-field-checkbox input[type=checkbox]:checked::after{
+content:"";display:block;width:6px;height:11px;margin:3px auto 0;
+border:solid var(--gr-paper-050);border-width:0 2px 2px 0;transform:rotate(45deg)}
+.wpforms-container .wpforms-field-checkbox .wpforms-field-label-inline{
+font-size:var(--fs-base);font-weight:400;letter-spacing:0;text-transform:none;
+color:var(--text-body);margin:0}
+
+.wpforms-container .wpforms-submit-container{margin:0}
+.wpforms-container button.wpforms-submit{
+font-family:var(--font-sans)!important;font-size:var(--fs-sm)!important;font-weight:600!important;
+letter-spacing:var(--ls-button)!important;text-transform:uppercase!important;
+background:var(--gr-espresso-950)!important;color:var(--gr-paper-050)!important;
+border:1px solid var(--gr-espresso-950)!important;border-radius:var(--radius-sm)!important;
+padding:0 var(--space-7)!important;min-height:52px!important;width:100%;
+display:inline-flex;align-items:center;justify-content:center;gap:10px;cursor:pointer}
+.wpforms-container button.wpforms-submit::after{content:"→";font-size:15px;line-height:1}
+.wpforms-container button.wpforms-submit:hover{background:var(--gr-cocoa-800)!important;border-color:var(--gr-cocoa-800)!important}
+.wpforms-container .wpforms-error{color:var(--gr-copper-500);font-size:var(--fs-xs)}
+
+/* Nyhedsbrevet i footeren. Det poster direkte til Mailchimp, saa der er ingen
+   kode paa vores side — men det staar paa moerk bund og skal have sine egne
+   farver; temaets input-regler er lavet til lys bund. */
+.gr-news{margin:0}
+.gr-news p{margin:0 0 var(--space-4)}
+.gr-news__row{display:flex;flex-direction:column;gap:var(--space-4)}
+.gr-news input[type=email]{
+background:transparent;border:1px solid var(--gr-wood-700);border-radius:var(--radius-sm);
+color:var(--text-on-dark);min-height:46px;padding:0 var(--space-5);font-size:var(--fs-sm);
+width:100%;box-sizing:border-box}
+.gr-news input[type=email]::placeholder{color:var(--gr-wood-600)}
+.gr-news input[type=email]:focus{outline:2px solid var(--gr-latte-400);outline-offset:1px;border-color:var(--gr-latte-400)}
+.gr-news button{
+font-family:var(--font-sans);font-size:var(--fs-xs);font-weight:600;
+letter-spacing:var(--ls-button);text-transform:uppercase;
+background:var(--gr-paper-050);color:var(--gr-espresso-950);
+border:1px solid var(--gr-paper-050);border-radius:var(--radius-sm);
+min-height:44px;padding:0 var(--space-7);cursor:pointer;align-self:flex-start}
+.gr-news button:hover{background:var(--gr-latte-400);border-color:var(--gr-latte-400)}
