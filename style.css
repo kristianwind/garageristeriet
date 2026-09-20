@@ -1,21 +1,388 @@
 /*
 Theme Name: GarageRisteriet
-Theme URI: https://github.com/kristianwind/garageristeriet-theme
+Theme URI: https://garageristeriet.dk
+Update URI: https://github.com/kristianwind/garageristeriet-theme
 Author: GarageRisteriet
 Author URI: https://garageristeriet.dk
-Description: Nordisk minimalistisk blok-tema (Full Site Editing) til GarageRisteriet – dansk specialkaffe-risteri med WooCommerce-shop. Onepager-forside bygget af block patterns, lokalt hostede webfonts og automatiske opdateringer via GitHub Releases.
-Version: 1.0.0
+Description: Warmt nordisk / japandi blocktheme (FSE) til GarageRisteriet - specialkafferisteri i Hornslet. Onepager-forside, WooCommerce-klar, selvhostede fonte, ingen eksterne CDN-kald (GDPR).
 Requires at least: 6.5
 Tested up to: 6.8
 Requires PHP: 7.4
+Version: 1.2.0
 License: GNU General Public License v2 or later
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: garageristeriet
-Tags: full-site-editing, block-patterns, e-commerce, one-column, custom-colors, custom-typography
-Update URI: https://github.com/kristianwind/garageristeriet-theme
+Tags: full-site-editing, block-patterns, e-commerce, one-column, custom-colors, custom-logo, editor-style, translation-ready
 */
 
-/*
-Al design er defineret i theme.json.
-Supplerende styles ligger i assets/css/garageristeriet.css.
-*/
+/* ─ Tokens (fra design-systemet) ───────────────────────── */
+:root{
+--gr-paper-000:#ffffff;--gr-paper-050:#faf7f1;--gr-paper-100:#f3ede3;--gr-paper-200:#e8dfd1;--gr-paper-300:#dacdb9;
+--gr-latte-400:#c9b295;--gr-latte-500:#b2946f;--gr-wood-600:#98764f;--gr-wood-700:#75593b;
+--gr-cocoa-800:#4a3428;--gr-cocoa-900:#2e211a;--gr-espresso-950:#1b1310;--gr-ink:#1f1f1d;
+--gr-sage-500:#8a9481;--gr-sage-200:#ccd2c3;--gr-copper-500:#a9603c;--gr-copper-200:#e6c9b7;
+--gr-success-600:#5f7a51;--gr-warning-600:#b4801f;--gr-danger-600:#9b3a2b;--gr-info-600:#5f7480;
+--gr-alpha-cocoa-04:rgba(46,33,26,.04);--gr-alpha-cocoa-08:rgba(46,33,26,.08);--gr-alpha-cocoa-14:rgba(46,33,26,.14);--gr-alpha-cocoa-32:rgba(46,33,26,.32);
+--gr-alpha-paper-12:rgba(250,247,241,.12);
+--surface-page:var(--gr-paper-050);--surface-card:var(--gr-paper-000);--surface-sunken:var(--gr-paper-100);--surface-muted:var(--gr-paper-200);--surface-inverse:var(--gr-espresso-950);--surface-accent:var(--gr-cocoa-800);--surface-sage:var(--gr-sage-200);
+--text-strong:var(--gr-espresso-950);--text-body:var(--gr-cocoa-900);--text-muted:var(--gr-wood-700);--text-subtle:var(--gr-latte-500);--text-on-dark:var(--gr-paper-050);--text-on-dark-muted:var(--gr-latte-400);--text-link:var(--gr-cocoa-800);--text-link-hover:var(--gr-copper-500);--text-price:var(--gr-espresso-950);--text-sale:var(--gr-copper-500);
+--border-hairline:var(--gr-alpha-cocoa-08);--border-subtle:var(--gr-paper-200);--border-strong:var(--gr-latte-400);--border-inverse:var(--gr-alpha-paper-12);
+--font-display:Anton,Haettenschweiler,"Arial Narrow",sans-serif;
+--font-serif:"Source Serif 4",Georgia,serif;
+--font-sans:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+--font-sans-cond:"Source Sans 3","Roboto Condensed",system-ui,sans-serif;
+--fs-2xs:11px;--fs-xs:12px;--fs-sm:14px;--fs-base:17px;--fs-md:19px;--fs-lg:22px;--fs-xl:28px;--fs-2xl:36px;--fs-3xl:46px;--fs-4xl:60px;--fs-5xl:78px;
+--lh-tight:.94;--lh-snug:1.15;--lh-heading:1.22;--lh-body:1.62;
+--ls-eyebrow:.18em;--ls-button:.06em;--ls-heading:-.005em;
+--space-2:4px;--space-3:8px;--space-4:12px;--space-5:16px;--space-6:20px;--space-7:24px;--space-8:32px;--space-9:40px;--space-10:48px;--space-11:64px;--space-12:80px;--space-13:96px;
+--page-max:1240px;--page-pad:32px;--content-max:720px;--section-y:96px;
+--radius-xs:2px;--radius-sm:4px;--radius-md:8px;--radius-lg:14px;--radius-pill:999px;
+--shadow-sm:0 1px 2px var(--gr-alpha-cocoa-08);--shadow-md:0 6px 18px -8px var(--gr-alpha-cocoa-14);--shadow-lg:0 18px 40px -18px var(--gr-alpha-cocoa-14);
+--ease-standard:cubic-bezier(.2,.6,.2,1);--dur-fast:160ms;--dur-mid:240ms;
+--ring-focus:0 0 0 2px var(--gr-paper-050),0 0 0 6px var(--gr-cocoa-800);
+--texture-paper:radial-gradient(120% 80% at 20% 10%,rgba(201,178,149,.18),transparent 60%),radial-gradient(90% 70% at 85% 90%,rgba(152,118,79,.14),transparent 65%);
+--scrim-image:linear-gradient(to top,rgba(27,19,16,.72),rgba(27,19,16,0) 62%);
+}
+
+/* ─ Basis ──────────────────────────────────────────────── */
+body{background:var(--surface-page);color:var(--text-body);font-family:var(--font-sans);font-size:var(--fs-base);line-height:var(--lh-body);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;font-kerning:normal}
+h1,h2,h3,h4,h5,h6{text-wrap:pretty;letter-spacing:var(--ls-heading);color:var(--text-strong)}
+h1,h2,h4,h5{font-family:var(--font-serif);font-weight:400}
+h3{font-family:var(--font-sans);font-weight:600}
+p{text-wrap:pretty}
+a{color:var(--text-link);text-decoration-thickness:1px;text-underline-offset:3px;transition:color var(--dur-fast) var(--ease-standard)}
+a:hover{color:var(--text-link-hover)}
+:where(a,button,input,select,textarea,summary):focus-visible{outline:none;box-shadow:var(--ring-focus)}
+figure,img{max-width:100%}
+img{height:auto}
+.gr-tabular,.woocommerce-Price-amount,td,th{font-variant-numeric:tabular-nums}
+@media (prefers-reduced-motion:reduce){*{transition-duration:1ms!important;animation-duration:1ms!important}}
+
+/* ─ Tekstroller ────────────────────────────────────────── */
+.gr-eyebrow{font-size:var(--fs-xs);font-weight:600;letter-spacing:var(--ls-eyebrow);text-transform:uppercase;color:var(--text-muted);margin:0 0 var(--space-4)}
+.gr-lead{font-size:var(--fs-md);color:var(--text-muted);max-width:42ch}
+.gr-small{font-size:var(--fs-sm);color:var(--text-muted)}
+.gr-display{font-family:var(--font-display);text-transform:uppercase;letter-spacing:.01em;line-height:var(--lh-tight);color:var(--gr-latte-400)}
+.gr-section{padding-top:var(--section-y)}
+.gr-rule{border-top:1px solid var(--border-subtle);border-bottom:1px solid var(--border-subtle)}
+.gr-on-dark,.gr-on-dark p,.gr-on-dark li{color:var(--text-on-dark-muted)}
+.gr-on-dark h1,.gr-on-dark h2,.gr-on-dark h3{color:var(--text-on-dark)}
+.gr-on-dark .gr-eyebrow{color:var(--gr-wood-600)}
+
+/* ─ Header ─────────────────────────────────────────────── */
+.gr-strip{background:var(--surface-inverse);color:var(--text-on-dark-muted);font-size:var(--fs-xs);font-weight:600;letter-spacing:var(--ls-eyebrow);text-transform:uppercase;text-align:center;padding:var(--space-3) var(--space-5);margin:0}
+.gr-header{position:sticky;top:0;z-index:30;background:var(--surface-page);border-bottom:1px solid var(--border-hairline)}
+.gr-header .wp-block-site-logo img{height:72px;width:auto}
+.gr-nav a,.gr-nav .wp-block-navigation-item__content{font-size:var(--fs-xs);font-weight:600;letter-spacing:var(--ls-button);text-transform:uppercase;color:var(--text-muted);text-decoration:none;padding-bottom:2px;border-bottom:2px solid transparent}
+.gr-nav a:hover,.gr-nav .current-menu-item .wp-block-navigation-item__content{color:var(--text-strong);border-bottom-color:var(--gr-cocoa-800)}
+
+/* ─ Knapper ────────────────────────────────────────────── */
+.wp-block-button__link,.gr-btn,button.single_add_to_cart_button,a.button,button.button,input[type=submit],.woocommerce a.button,.woocommerce button.button,.woocommerce input.button{font-family:var(--font-sans);font-size:var(--fs-sm);font-weight:600;letter-spacing:var(--ls-button);text-transform:uppercase;background:var(--gr-espresso-950);color:var(--gr-paper-050);border:1px solid var(--gr-espresso-950);border-radius:var(--radius-sm);padding:0 var(--space-7);min-height:44px;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;cursor:pointer;transition:background var(--dur-fast) var(--ease-standard),transform var(--dur-fast) var(--ease-standard),box-shadow var(--dur-fast)}
+.wp-block-button__link:hover,.gr-btn:hover,a.button:hover,button.button:hover,.woocommerce a.button:hover,.woocommerce button.button:hover{background:var(--gr-cocoa-800);border-color:var(--gr-cocoa-800);color:var(--gr-paper-050);transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.wp-block-button__link:active,.gr-btn:active{transform:scale(.985);box-shadow:none}
+.is-style-outline .wp-block-button__link,.gr-btn--secondary{background:transparent;color:var(--gr-cocoa-900);border:1px solid var(--gr-latte-500)}
+.is-style-outline .wp-block-button__link:hover,.gr-btn--secondary:hover{background:var(--gr-paper-100);color:var(--gr-espresso-950);border-color:var(--gr-wood-600)}
+.gr-btn--quiet{background:transparent;border-color:transparent;color:var(--text-muted)}
+.gr-btn--quiet:hover{background:var(--gr-paper-100);border-color:transparent;color:var(--text-strong)}
+.gr-on-dark .wp-block-button__link,.gr-btn--inverse{background:var(--gr-paper-050);color:var(--gr-espresso-950);border-color:var(--gr-paper-050)}
+.gr-on-dark .wp-block-button__link:hover{background:var(--gr-paper-200);color:var(--gr-espresso-950)}
+
+/* ─ Kort ───────────────────────────────────────────────── */
+.gr-card{background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:var(--space-7)}
+.gr-card--lg{padding:var(--space-10)}
+.gr-card--flat{background:var(--surface-sunken);border-color:transparent}
+.gr-card--link{transition:transform var(--dur-mid) var(--ease-standard),box-shadow var(--dur-mid),border-color var(--dur-mid)}
+.gr-card--link:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg);border-color:var(--border-strong)}
+.gr-badge{display:inline-flex;align-items:center;gap:6px;font-size:var(--fs-2xs);font-weight:600;letter-spacing:var(--ls-eyebrow);text-transform:uppercase;padding:5px 11px;border-radius:var(--radius-pill);background:var(--gr-sage-200);color:#3f4a36}
+.gr-badge--outline{background:transparent;border:1px solid var(--border-strong);color:var(--text-muted)}
+.gr-badge--sale{background:var(--gr-copper-200);color:#6f3a20}
+
+/* ─ Billedpladsholder (indtil fotos findes) ────────────── */
+.gr-ph{position:relative;display:flex;align-items:flex-end;background-color:var(--gr-paper-100);background-image:var(--texture-paper);border:1px solid var(--border-subtle);border-radius:var(--radius-md);overflow:hidden;padding:var(--space-5)}
+.gr-ph::before{content:"";position:absolute;inset:0;background-image:repeating-linear-gradient(135deg,rgba(152,118,79,.10) 0 1px,transparent 1px 9px)}
+.gr-ph p{position:relative;margin:0;font-family:ui-monospace,Menlo,monospace;font-size:var(--fs-xs);letter-spacing:.02em;color:var(--text-muted)}
+.gr-ph--16x9{aspect-ratio:16/9}.gr-ph--4x5{aspect-ratio:4/5}.gr-ph--3x2{aspect-ratio:3/2}.gr-ph--4x3{aspect-ratio:4/3}
+.gr-on-dark .gr-ph{background-color:var(--gr-cocoa-800);border-color:var(--border-inverse)}
+.gr-on-dark .gr-ph p{color:var(--gr-latte-400)}
+
+/* ─ Sektioner ──────────────────────────────────────────── */
+.gr-usp{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-8);padding:var(--space-9) 0}
+.gr-usp h3{font-size:var(--fs-base);margin:0 0 var(--space-2)}
+.gr-usp p{margin:0;font-size:var(--fs-sm);color:var(--text-muted)}
+.gr-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-8)}
+.gr-steps .gr-num{font-family:var(--font-display);font-size:var(--fs-2xl);line-height:1;color:var(--gr-latte-400);margin:0 0 var(--space-4)}
+.gr-band{background:var(--surface-inverse);padding:var(--space-12) 0;margin-top:var(--section-y)}
+.gr-quote{font-family:var(--font-serif);font-size:var(--fs-2xl);line-height:var(--lh-snug);color:var(--text-on-dark);max-width:28ch;margin:var(--space-8) 0 0;border:0;padding:0}
+.gr-hours{display:flex;justify-content:space-between;gap:var(--space-5);padding:var(--space-4) 0;border-bottom:1px solid var(--border-subtle);margin:0}
+.gr-hours span:first-child{color:var(--text-muted)}
+.gr-hours span:last-child{color:var(--text-strong)}
+.gr-notice{background:var(--gr-paper-100);border:1px solid var(--border-subtle);border-left:3px solid var(--gr-sage-500);border-radius:var(--radius-sm);padding:var(--space-6)}
+.gr-notice strong{display:block;color:var(--text-strong);margin-bottom:var(--space-2)}
+.gr-meter{border:1px solid var(--border-subtle);border-radius:var(--radius-md);background:var(--surface-card);padding:var(--space-6)}
+.gr-meter .gr-bars{display:flex;gap:6px;margin:var(--space-4) 0 var(--space-3)}
+.gr-meter .gr-bars i{display:block;height:10px;flex:1;border-radius:var(--radius-xs);background:var(--gr-paper-200)}
+.gr-meter .gr-bars i.on{background:var(--gr-cocoa-800)}
+
+/* ─ Footer ─────────────────────────────────────────────── */
+.gr-footer{background:var(--surface-inverse);color:var(--text-on-dark-muted);margin-top:var(--section-y)}
+.gr-footer a{color:var(--text-on-dark-muted);text-decoration:none}
+.gr-footer a:hover{color:var(--gr-paper-050)}
+.gr-footer a.gr-btn,.gr-footer .wp-block-button__link,.gr-footer .gr-btn--inverse{color:var(--gr-espresso-950)}
+.gr-footer a.gr-btn:hover,.gr-footer .wp-block-button__link:hover,.gr-footer .gr-btn--inverse:hover{color:var(--gr-espresso-950);background:var(--gr-paper-200);border-color:var(--gr-paper-200)}
+.gr-footer a.gr-btn--secondary{color:var(--gr-paper-050);border-color:var(--gr-wood-700)}
+.gr-footer a.gr-btn--secondary:hover{color:var(--gr-espresso-950);background:var(--gr-paper-050);border-color:var(--gr-paper-050)}
+.gr-footer .gr-fh{font-size:var(--fs-xs);font-weight:600;letter-spacing:var(--ls-eyebrow);text-transform:uppercase;color:var(--text-on-dark);margin:0 0 var(--space-5)}
+.gr-footer ul{list-style:none;margin:0;padding:0}
+.gr-footer li{font-size:var(--fs-sm);padding:var(--space-2) 0}
+.gr-footer .wp-block-site-logo img{height:54px;width:auto}
+.gr-fcols{display:grid;grid-template-columns:1.4fr .85fr .95fr 1fr 1.5fr;gap:var(--space-8)}
+.gr-marks{display:flex;align-items:flex-end;gap:var(--space-9);flex-wrap:wrap;border-top:1px solid var(--border-inverse);padding-top:var(--space-8)}
+.gr-mark-label{font-size:var(--fs-2xs);font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--gr-wood-600);margin:0 0 var(--space-3)}
+.gr-mark-row{display:flex;gap:var(--space-4);flex-wrap:wrap;margin:0}
+.gr-mark{display:inline-flex;align-items:center;justify-content:center;text-align:center;min-width:74px;height:30px;padding:0 6px;border:1px solid var(--gr-wood-700);border-radius:var(--radius-xs);font-size:8px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--gr-latte-400)}
+.gr-bottom{border-top:1px solid var(--border-inverse);padding-top:var(--space-6);display:flex;gap:var(--space-7);flex-wrap:wrap;font-size:var(--fs-xs);color:var(--gr-wood-600)}
+.gr-bottom a{color:var(--gr-wood-600)}
+
+/* ─ Formularer ─────────────────────────────────────────── */
+input[type=text],input[type=email],input[type=tel],input[type=search],input[type=number],input[type=password],select,textarea,.wp-block-search__input{width:100%;font-family:var(--font-sans);font-size:var(--fs-base);color:var(--text-body);background:var(--surface-card);border:1px solid var(--gr-latte-500);border-radius:var(--radius-sm);min-height:44px;padding:0 var(--space-5)}
+textarea{padding:var(--space-4) var(--space-5);min-height:120px}
+input::placeholder,textarea::placeholder{color:var(--text-subtle)}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gr-cocoa-800);box-shadow:0 0 0 3px var(--gr-alpha-cocoa-08)}
+label{display:block;font-size:var(--fs-sm);font-weight:600;color:var(--text-strong);margin-bottom:var(--space-3)}
+.gr-on-dark input,.gr-on-dark select,.gr-on-dark textarea{background:transparent;border-color:var(--gr-wood-700);color:var(--text-on-dark)}
+
+/* ─ WooCommerce ────────────────────────────────────────── */
+.woocommerce ul.products li.product{background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-md);overflow:hidden;padding:0 0 var(--space-7);text-align:left;transition:transform var(--dur-mid) var(--ease-standard),box-shadow var(--dur-mid),border-color var(--dur-mid)}
+.woocommerce ul.products li.product:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg);border-color:var(--border-strong)}
+.woocommerce ul.products li.product a img{margin:0 0 var(--space-6);aspect-ratio:4/5;object-fit:cover;border-radius:0}
+.woocommerce ul.products li.product .woocommerce-loop-product__title{font-family:var(--font-serif);font-size:var(--fs-lg)!important;color:var(--text-strong);padding:0 var(--space-7) var(--space-2)!important}
+.woocommerce ul.products li.product .price,.woocommerce div.product p.price{color:var(--text-strong);font-size:var(--fs-md);font-weight:600;padding:0 var(--space-7)}
+.woocommerce ul.products li.product .price del{color:var(--text-subtle);font-weight:400}
+.woocommerce ul.products li.product .price ins{color:var(--gr-copper-500);text-decoration:none}
+.woocommerce ul.products li.product .button{margin:var(--space-6) var(--space-7) 0}
+.woocommerce span.onsale{background:var(--gr-copper-200);color:#6f3a20;border-radius:var(--radius-pill);font-size:var(--fs-2xs);font-weight:600;letter-spacing:var(--ls-eyebrow);text-transform:uppercase;min-height:0;line-height:1;padding:7px 12px;top:16px;left:16px;right:auto}
+.woocommerce div.product .product_title{font-family:var(--font-serif);font-size:var(--fs-2xl)}
+.woocommerce .woocommerce-message,.woocommerce .woocommerce-info,.woocommerce .woocommerce-error{background:var(--gr-paper-100);border-top:0;border-left:3px solid var(--gr-sage-500);border-radius:var(--radius-sm);color:var(--text-body)}
+.woocommerce .woocommerce-error{border-left-color:var(--gr-danger-600)}
+.woocommerce table.shop_table{border:1px solid var(--border-subtle);border-radius:var(--radius-md);border-collapse:collapse}
+.woocommerce table.shop_table th{font-size:var(--fs-xs);font-weight:600;letter-spacing:var(--ls-eyebrow);text-transform:uppercase;color:var(--text-muted)}
+.woocommerce table.shop_table td,.woocommerce table.shop_table th{border-bottom:1px solid var(--border-subtle)}
+.wc-block-components-button,.wc-block-cart__submit-button{border-radius:var(--radius-sm)!important;text-transform:uppercase;letter-spacing:var(--ls-button)}
+
+/* ─ Responsivt ─────────────────────────────────────────── */
+@media (max-width:1023px){
+.gr-fcols{grid-template-columns:1fr 1fr 1fr}
+.gr-steps{grid-template-columns:1fr 1fr}
+}
+@media (max-width:781px){
+:root{--section-y:64px;--page-pad:20px}
+.gr-usp,.gr-steps,.gr-fcols{grid-template-columns:1fr;gap:var(--space-7)}
+.gr-quote{font-size:var(--fs-xl)}
+h1{font-size:var(--fs-2xl)}
+}
+
+
+/* ─ Breddegaranti ──────────────────────────────────────────
+   Uafhængig af sitets globale indholdsbredde: forsidens
+   sektioner får 1240px, header og footer får samme ramme. */
+.home .wp-site-blocks > main.wp-block-group,
+.wp-site-blocks > main.wp-block-group{max-width:none;padding-left:0;padding-right:0}
+.wp-site-blocks > main.wp-block-group > section{max-width:1240px;margin-left:auto;margin-right:auto;padding-left:var(--page-pad);padding-right:var(--page-pad);width:100%;box-sizing:border-box}
+.wp-site-blocks > main.wp-block-group > section.gr-band,
+.wp-site-blocks > main.wp-block-group > section.gr-uspband{max-width:none;padding-left:0;padding-right:0}
+.gr-band > .wp-block-columns,.gr-band > .wp-block-group{max-width:1240px;margin-left:auto;margin-right:auto;padding-left:var(--page-pad);padding-right:var(--page-pad);box-sizing:border-box}
+.gr-header > .wp-block-group,.gr-footer > .wp-block-group{max-width:1240px;margin-left:auto;margin-right:auto;padding-left:var(--page-pad);padding-right:var(--page-pad);box-sizing:border-box}
+.gr-header > .gr-strip{max-width:none;margin:0;padding-left:var(--page-pad);padding-right:var(--page-pad)}
+.wp-site-blocks > main.wp-block-group > section > .wp-block-columns,
+.wp-site-blocks > main.wp-block-group > section > .wp-block-group{max-width:none}
+.gr-products,.woocommerce ul.products{max-width:none}
+
+
+/* ─ Typografi-garanti ──────────────────────────────────────
+   Overstyrer gemte globale stilarter fra det gamle tema. */
+.wp-site-blocks h1,.wp-site-blocks .wp-block-post-title{font-family:var(--font-serif);font-weight:400;font-size:clamp(38px,4.6vw,60px);line-height:1.05;letter-spacing:-.005em}
+.wp-site-blocks h2{font-family:var(--font-serif);font-weight:400;font-size:clamp(28px,2.6vw,36px);line-height:1.22;letter-spacing:-.005em}
+.wp-site-blocks h3{font-family:var(--font-sans);font-weight:600;font-size:var(--fs-lg);line-height:1.22}
+.wp-site-blocks h4{font-family:var(--font-sans);font-weight:600;font-size:var(--fs-md)}
+.wp-site-blocks .gr-usp h3{font-size:var(--fs-base)}
+.wp-site-blocks .gr-lead{font-size:var(--fs-md);line-height:1.6;max-width:46ch}
+.wp-site-blocks .gr-eyebrow{font-size:var(--fs-xs);font-weight:600;letter-spacing:var(--ls-eyebrow);text-transform:uppercase;color:var(--text-muted)}
+.wp-site-blocks .gr-quote{font-size:clamp(28px,2.6vw,36px)}
+.wp-site-blocks .gr-card h3{margin-top:0}
+
+/* ─ WooCommerce-produktgrid ────────────────────────────────
+   Woo bruger floats som standard; her er det et rigtigt grid
+   i brandets kortstil. */
+.wp-block-shortcode,.wp-block-woocommerce-all-products{max-width:none}
+.woocommerce ul.products,.woocommerce-page ul.products{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--space-8);margin:0!important;padding:0!important;list-style:none;width:100%}
+.woocommerce ul.products::before,.woocommerce ul.products::after{display:none!important}
+.woocommerce ul.products li.product,.woocommerce-page ul.products li.product{width:auto!important;margin:0!important;float:none!important;clear:none!important;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:8px;overflow:hidden;display:flex;flex-direction:column;text-align:left;padding:0;position:relative;transition:border-color .16s ease,box-shadow .16s ease,transform .24s ease}
+.woocommerce ul.products li.product:hover{border-color:var(--border-strong);box-shadow:0 6px 18px -8px rgba(46,33,26,.14);transform:translateY(-2px)}
+.woocommerce ul.products li.product > a:first-of-type{display:block}
+.woocommerce ul.products li.product a img,.woocommerce ul.products li.product img{width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;margin:0!important;border-radius:0;display:block}
+.woocommerce ul.products li.product .woocommerce-loop-product__title{font-family:var(--font-serif)!important;font-weight:400;font-size:var(--fs-lg);line-height:1.22;color:var(--text-strong);padding:var(--space-6) var(--space-6) var(--space-2);margin:0}
+.woocommerce ul.products li.product .price{font-family:var(--font-sans);font-size:var(--fs-md);font-weight:600;color:var(--text-price);padding:0 var(--space-6) var(--space-5);margin:0;font-variant-numeric:tabular-nums;display:block}
+.woocommerce ul.products li.product .price del{color:var(--text-subtle);font-weight:400;margin-right:8px}
+.woocommerce ul.products li.product .price ins{text-decoration:none;color:var(--text-sale,var(--gr-copper-500))}
+.woocommerce ul.products li.product .woocommerce-loop-product__link{text-decoration:none}
+.woocommerce ul.products li.product .star-rating{margin:0 var(--space-6) var(--space-4);font-size:.8em;color:var(--gr-latte-500)}
+.woocommerce ul.products li.product .button,.woocommerce ul.products li.product .added_to_cart{margin:auto var(--space-6) var(--space-6)!important;display:inline-flex;align-items:center;justify-content:center;background:transparent;color:var(--text-body);border:1px solid var(--border-strong);border-radius:4px;padding:12px 18px;font-family:var(--font-sans);font-size:var(--fs-sm);font-weight:600;letter-spacing:var(--ls-button);text-transform:uppercase;text-decoration:none}
+.woocommerce ul.products li.product .button:hover{background:var(--surface-sunken);border-color:var(--gr-wood-600);color:var(--text-strong)}
+.woocommerce ul.products li.product .onsale{position:absolute;top:var(--space-5);left:var(--space-5);right:auto;margin:0;background:var(--gr-copper-500);color:var(--gr-paper-050);border-radius:999px;padding:4px 12px;font-family:var(--font-sans);font-size:var(--fs-2xs);font-weight:600;letter-spacing:.08em;text-transform:uppercase;min-height:0;line-height:1.4}
+@media (max-width:1023px){.woocommerce ul.products,.woocommerce-page ul.products{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:640px){.woocommerce ul.products,.woocommerce-page ul.products{grid-template-columns:1fr}}
+
+
+/* ─ Variantvælger i produktgriddet ─────────────────────────
+   Vægtvalg som chips, så kunden kan lægge i kurv fra forsiden
+   uden at blive sendt videre til en produktside. */
+.gr-variations{display:flex;flex-direction:column;gap:var(--space-4);margin-top:var(--space-4)}
+.gr-variations__options{display:flex;flex-wrap:wrap;gap:var(--space-3);border:0;margin:0;padding:0}
+.gr-variations__option{position:relative;display:inline-flex}
+.gr-variations__option input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+.gr-variations__option span{display:inline-flex;align-items:center;min-height:32px;padding:0 14px;border:1px solid var(--border-strong);border-radius:999px;background:var(--surface-card);color:var(--text-body);font-size:var(--fs-sm);font-weight:600;letter-spacing:.02em;transition:background var(--dur-fast) var(--ease-standard),border-color var(--dur-fast) var(--ease-standard),color var(--dur-fast) var(--ease-standard)}
+.gr-variations__option input:hover + span{border-color:var(--gr-wood-600);background:var(--surface-sunken)}
+.gr-variations__option input:checked + span{background:var(--surface-inverse);border-color:var(--surface-inverse);color:var(--text-on-dark)}
+.gr-variations__option input:focus-visible + span{outline:2px solid var(--surface-page);outline-offset:0;box-shadow:0 0 0 4px var(--gr-espresso-950)}
+.gr-variations__option input:disabled + span{opacity:.45;cursor:not-allowed;text-decoration:line-through}
+.gr-variations__row{display:flex;align-items:center;justify-content:space-between;gap:var(--space-4);flex-wrap:wrap;min-width:0}
+.gr-variations__price{font-family:var(--font-sans);font-size:var(--fs-lg);font-weight:600;color:var(--text-price);font-variant-numeric:tabular-nums}
+.gr-variations__price del{color:var(--text-muted);font-weight:400;margin-right:6px}
+.gr-variations__price ins{text-decoration:none;color:var(--gr-copper-500)}
+.gr-btn--sm{padding:10px 16px;font-size:var(--fs-xs)}
+.gr-field{display:block;min-width:0}
+.gr-select{position:relative;display:block}
+.gr-select select,.gr-select .gr-control{appearance:none;-webkit-appearance:none;padding-right:38px}
+.gr-select__chev{position:absolute;top:50%;right:12px;transform:translateY(-50%);display:flex;color:var(--text-muted);pointer-events:none}
+.gr-variations__grind{margin:0}
+.gr-variations__grind .gr-field__label{font-family:var(--font-sans);font-size:var(--fs-xs);font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);display:block;margin-bottom:6px}
+.gr-variations__more{align-self:flex-start;font-size:var(--fs-sm);color:var(--text-link);text-decoration:underline;text-underline-offset:3px}
+.gr-variations__more:hover{color:var(--text-link-hover)}
+.gr-variations__soldout{margin-top:var(--space-4)}
+/* Skjul WooCommerce' egen pris i loopet — prisen står nu i vælgeren. */
+.gr-products li.product.product-type-variable > .price,
+.woocommerce ul.products li.product.product-type-variable > .price{display:none}
+
+
+/* ─ Produktsiden ───────────────────────────────────────────
+   Vi overtager IKKE WooCommerces produktskabelon — abonnements-
+   pluginnet skriver sine egne felter der. Her klaedes Woo's egen
+   opbygning bare i brandets toej. */
+.woocommerce div.product{max-width:1240px;margin:0 auto;padding:var(--section-y) var(--page-pad)}
+.woocommerce div.product .product_title{font-family:var(--font-serif);font-weight:400;font-size:var(--fs-3xl);line-height:var(--lh-heading);letter-spacing:var(--ls-heading);color:var(--text-strong);margin:0 0 var(--space-4)}
+.woocommerce div.product .woocommerce-product-details__short-description{font-size:var(--fs-md);line-height:var(--lh-body);color:var(--text-body);max-width:56ch}
+.woocommerce div.product p.price,.woocommerce div.product span.price{font-family:var(--font-sans);font-size:var(--fs-xl);font-weight:600;color:var(--text-price);font-variant-numeric:tabular-nums}
+.woocommerce div.product p.price del,.woocommerce div.product span.price del{color:var(--text-muted);font-weight:400}
+.woocommerce div.product p.price ins,.woocommerce div.product span.price ins{text-decoration:none;color:var(--text-sale)}
+.woocommerce div.product div.images img{border-radius:var(--radius-md);background:var(--surface-sunken)}
+.woocommerce div.product form.cart{display:grid;gap:var(--space-5);padding:var(--space-7);background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-md);margin-top:var(--space-6)}
+.woocommerce div.product form.cart .variations{width:100%;border-collapse:collapse;margin:0}
+.woocommerce div.product form.cart .variations th,
+.woocommerce div.product form.cart .variations td{display:block;width:100%;padding:0;text-align:left;border:0}
+.woocommerce div.product form.cart .variations th.label label{font-family:var(--font-sans);font-size:var(--fs-xs);font-weight:600;letter-spacing:var(--ls-eyebrow);text-transform:uppercase;color:var(--text-muted);margin:0 0 6px;display:block}
+.woocommerce div.product form.cart .variations td.value{margin-bottom:var(--space-5)}
+.woocommerce div.product form.cart .reset_variations{font-size:var(--fs-sm);color:var(--text-muted)}
+.woocommerce div.product form.cart .quantity{display:inline-flex}
+.woocommerce div.product form.cart .single_add_to_cart_button{width:100%;justify-content:center}
+.woocommerce div.product .woocommerce-variation-price{padding-top:var(--space-4);border-top:1px solid var(--border-hairline)}
+.woocommerce div.product .woocommerce-tabs ul.tabs{border-bottom:1px solid var(--border-subtle);padding:0;margin:0 0 var(--space-7)}
+.woocommerce div.product .woocommerce-tabs ul.tabs li{background:none;border:0;border-radius:0;margin:0 var(--space-6) 0 0;padding:0}
+.woocommerce div.product .woocommerce-tabs ul.tabs li a{font-family:var(--font-sans);font-size:var(--fs-xs);font-weight:600;letter-spacing:var(--ls-eyebrow);text-transform:uppercase;color:var(--text-muted);padding:var(--space-3) 0;display:block;border-bottom:2px solid transparent}
+.woocommerce div.product .woocommerce-tabs ul.tabs li.active a{color:var(--text-strong);border-bottom-color:var(--gr-copper-500)}
+.woocommerce div.product .woocommerce-tabs ul.tabs::before{display:none}
+.woocommerce .related>h2,.woocommerce .upsells>h2{font-family:var(--font-serif);font-weight:400;font-size:var(--fs-2xl);color:var(--text-strong);margin:0 0 var(--space-7)}
+.woocommerce .related,.woocommerce .upsells{max-width:1240px;margin:var(--section-y) auto 0;padding:0 var(--page-pad)}
+
+
+/* ─ Forside 1.1: hero, USP-bånd, abonnement, butik ─────── */
+.gr-hero{display:grid;grid-template-columns:1.15fr .85fr;gap:var(--space-10);align-items:center;padding-top:var(--space-10)}
+.gr-hero__title{font-size:clamp(34px,4.4vw,54px);line-height:1.06;margin:0 0 var(--space-5)}
+.gr-hero__text .gr-lead{color:var(--text-body);max-width:46ch;margin:0 0 var(--space-6)}
+.gr-hero__media{aspect-ratio:1/1;width:100%;max-width:420px;margin-left:auto;border-radius:var(--radius-md)}
+.gr-metarow{display:flex;gap:var(--space-7);flex-wrap:wrap;margin:var(--space-7) 0 0;padding-top:var(--space-5);border-top:1px solid var(--border-subtle);font-size:var(--fs-sm);color:var(--text-muted)}
+.gr-ph--1x1{aspect-ratio:1/1}
+
+.gr-uspband{background:var(--surface-inverse);color:var(--text-on-dark);margin-top:var(--space-10)}
+.gr-uspband__inner{max-width:var(--page-max);margin:0 auto;padding:var(--space-9) var(--page-pad);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--space-8)}
+.gr-uspband__item p{margin:0;color:var(--text-on-dark);font-size:var(--fs-base);line-height:var(--lh-body)}
+.gr-icon{display:inline-flex;width:46px;height:46px;align-items:center;justify-content:center;border:1px solid var(--gr-wood-700);border-radius:var(--radius-pill);color:var(--gr-latte-400);margin-bottom:var(--space-5)}
+.gr-icon--sm{width:38px;height:38px;flex-shrink:0;margin:0;border-color:var(--border-strong);color:var(--text-muted)}
+
+.gr-subhead{font-size:var(--fs-xs);font-weight:600;letter-spacing:var(--ls-eyebrow);text-transform:uppercase;color:var(--text-muted);margin:0 0 var(--space-6);padding-bottom:var(--space-4);border-bottom:1px solid var(--border-subtle)}
+.gr-subhead--plain{border:0;padding:0;margin-bottom:var(--space-5)}
+.gr-note{margin-top:var(--space-8);background:var(--surface-sunken);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:var(--space-7);max-width:56ch}
+.gr-note p{margin:0}
+.gr-note__title{font-weight:600;color:var(--text-strong);margin-bottom:var(--space-3)!important}
+
+.gr-steps .gr-num{font-family:var(--font-display);font-size:var(--fs-xl);line-height:1;color:var(--gr-latte-500);margin:0 0 var(--space-4)}
+.gr-steps .gr-card h3{margin:0 0 var(--space-3)}
+.gr-steps .gr-card p.gr-small{margin:0;color:var(--text-body)}
+
+.gr-abo{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-9);align-items:center}
+.gr-abo__rows{display:grid;gap:var(--space-4)}
+.gr-abo__row{display:flex;gap:var(--space-5);align-items:flex-start;padding:var(--space-5);border:1px solid var(--border-subtle);border-radius:var(--radius-sm)}
+.gr-abo__row p{margin:0}
+.gr-abo__rowtitle{font-weight:600;color:var(--text-strong);margin-bottom:2px!important}
+
+.gr-bullets{list-style:none;margin:0 0 var(--space-6);padding:0;display:grid;gap:var(--space-4)}
+.gr-bullets li{position:relative;padding-left:var(--space-6)}
+.gr-bullets li::before{content:"";position:absolute;left:0;top:11px;width:6px;height:6px;border-radius:50%;background:var(--gr-copper-500)}
+
+.gr-butik{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-7);align-items:stretch}
+.gr-butik .gr-card p:last-child{margin-bottom:0}
+.gr-butik .gr-ph{min-height:280px}
+.gr-hours--last{border-bottom:0}
+
+@media (max-width:1023px){
+.gr-hero{grid-template-columns:1fr;gap:var(--space-8)}
+.gr-hero__media{margin-left:0}
+.gr-uspband__inner{grid-template-columns:repeat(2,minmax(0,1fr))}
+.gr-abo,.gr-butik{grid-template-columns:1fr}
+}
+@media (max-width:640px){
+.gr-uspband__inner{grid-template-columns:1fr}
+}
+
+
+/* ─ 1.1.1: rettelser efter gennemgang ──────────────────── */
+/* WP's blockGap giver soeskende en margin-top; den maa ikke skubbe kort skaevt */
+.gr-steps > *,.gr-butik > *,.gr-abo > *,.gr-abo__rows > *,.gr-uspband__item{margin-top:0!important;margin-bottom:0!important}
+.gr-steps{align-items:stretch}
+.gr-steps > .gr-card{display:flex;flex-direction:column;height:100%}
+
+/* Variantvaelgeren: Safari kan ikke gøre en fieldset til flex-container,
+   derfor er raekken nu en div — og alt tomt luft er lukket. */
+.gr-variations{display:flex;flex-direction:column;gap:var(--space-5);margin:0;padding:0 var(--space-6) var(--space-6)}
+.gr-variations__options{display:flex;flex-direction:row;flex-wrap:wrap;gap:var(--space-3);border:0;margin:0;padding:0;min-inline-size:0}
+.gr-variations__option{margin:0}
+.gr-variations__grind{margin:0}
+.gr-variations__grind .gr-field__label{margin:0 0 var(--space-3)}
+.gr-variations select,.gr-variations .gr-control{min-height:44px}
+.gr-variations__row{margin:0}
+.gr-variations__more{margin:0}
+.woocommerce ul.products li.product > *:empty{display:none!important}
+.woocommerce ul.products li.product .gr-variations{margin-top:auto}
+.screen-reader-text{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(1px,1px,1px,1px);white-space:nowrap}
+
+/* 4 op paa desktop */
+@media (min-width:1280px){.woocommerce ul.products,.woocommerce-page ul.products{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (max-width:1279px) and (min-width:1024px){.woocommerce ul.products,.woocommerce-page ul.products{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+
+/* ─ 1.1.2: produktkortets vaelger strammet op ──────────── */
+.woocommerce ul.products li.product .gr-variations{display:flex;flex-direction:column;gap:var(--space-4);margin:auto 0 0;padding:0 var(--space-6) var(--space-6)}
+.woocommerce ul.products li.product .gr-variations > *{margin:0!important}
+.gr-variations p,.gr-variations label,.gr-variations div,.gr-variations span{margin-block:0}
+.gr-variations__options{display:flex;flex-direction:row;flex-wrap:wrap;gap:8px;padding:0;border:0}
+.gr-variations__option span{min-height:32px;padding:0 12px;font-size:var(--fs-sm)}
+.gr-variations__grind{display:block}
+.gr-variations__grind .gr-field__label{display:block;margin:0 0 6px!important;font-size:var(--fs-2xs);letter-spacing:.14em}
+.gr-variations .gr-select select,.gr-variations .gr-control{min-height:40px;padding:0 34px 0 12px;font-size:var(--fs-sm)}
+.gr-variations__row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:var(--space-3);flex-wrap:nowrap}
+.gr-variations__price{font-size:var(--fs-md);line-height:1.2;white-space:nowrap}
+.gr-variations .gr-btn--sm{padding:9px 14px;font-size:var(--fs-2xs);white-space:nowrap;min-height:38px}
+.gr-variations__more{font-size:var(--fs-sm);line-height:1.3}
+/* prisen vises kun ét sted — i vaelgeren */
+.woocommerce ul.products li.product.product-type-variable > .price{display:none!important}
+/* simple produkter: knappen skal ikke svaeve midt i kortet */
+.woocommerce ul.products li.product .button,.woocommerce ul.products li.product .added_to_cart{margin:auto var(--space-6) var(--space-6)!important;align-self:flex-start}

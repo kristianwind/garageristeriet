@@ -1,57 +1,59 @@
 name: Release
 
-# Bygger en ren tema-zip og uploader den som release-asset,
-# når der pushes et tag på formen v1.2.3.
 on:
   push:
     tags:
       - 'v*'
 
-permissions:
-  contents: write
-
 jobs:
-  release:
-    # Kun på GitHub. action-gh-release udgiver til den forge der KØRER den, og
-    # dette repo ligger også på gitea.nolimit.dk med Actions slået til — uden
-    # denne linje laver hvert tag en halvfærdig release derovre ved siden af
-    # den rigtige, tavst, mens GitHub ser fin ud. Temaets updater henter fra
-    # GitHub Releases, så det skal være de eneste der findes.
-    #
-    # Hele jobbet kan gates, fordi workflowen kun trigger på tags: der er
-    # ingen PR-CI her som en gate ellers ville slå fra sammen med den.
+  # Ugated: koerer ogsaa paa Gitea, saa auto-merge kan laese resultatet.
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Version i style.css skal matche tagget
+        run: |
+          set -euo pipefail
+          TAG="${GITHUB_REF_NAME#v}"
+          CSS_VERSION=$(sed -n 's/^Version:[[:space:]]*//p' style.css | head -1 | tr -d '\r')
+          echo "tag=$TAG css=$CSS_VERSION"
+          test "$CSS_VERSION" = "$TAG"
+
+      - name: PHP-syntaks
+        run: find . -name '*.php' -not -path './.git/*' -print0 | xargs -0 -n1 php -l
+
+      - name: Byg zip og bevis mappenavnet
+        run: |
+          set -euo pipefail
+          THEME=garageristeriet
+          rm -rf build && mkdir -p "build/$THEME"
+          rsync -a \
+            --exclude '.git' --exclude '.github' --exclude '.gitea' \
+            --exclude 'ci' --exclude 'build' --exclude 'node_modules' \
+            ./ "build/$THEME"/
+          (cd build && zip -rq "../$THEME.zip" "$THEME")
+          # Oeverste mappe SKAL vaere temamappen, ellers installerer
+          # WordPress en kopi ved siden af den gamle.
+          test "$(unzip -Z1 "$THEME.zip" | cut -d/ -f1 | sort -u)" = "$THEME"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: theme-zip
+          path: garageristeriet.zip
+
+  # Gated: action-gh-release publicerer til den forge der koerer den.
+  # Uden denne gate laver hvert tag ogsaa en halv release paa Gitea.
+  publish:
+    needs: test
     if: github.server_url == 'https://github.com'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Tjek at version i style.css matcher tagget
-        run: |
-          TAG_VERSION="${GITHUB_REF_NAME#v}"
-          CSS_VERSION="$(grep -i '^Version:' style.css | head -1 | awk '{print $2}')"
-          echo "Tag: $TAG_VERSION – style.css: $CSS_VERSION"
-          if [ "$TAG_VERSION" != "$CSS_VERSION" ]; then
-            echo "::error::Version i style.css ($CSS_VERSION) matcher ikke tagget ($TAG_VERSION). Bump versionen før du tagger."
-            exit 1
-          fi
-
-      - name: Byg zip med korrekt mappenavn
-        run: |
-          mkdir -p build/garageristeriet
-          rsync -a \
-            --exclude='.git' \
-            --exclude='.github' \
-            --exclude='build' \
-            --exclude='garageristeriet.zip' \
-            --exclude='.DS_Store' \
-            ./ build/garageristeriet/
-          cd build
-          zip -rq garageristeriet.zip garageristeriet
-          unzip -l garageristeriet.zip | head -20
-
-      - name: Opret GitHub Release med zip som asset
-        uses: softprops/action-gh-release@v2
+      - uses: actions/download-artifact@v4
         with:
-          files: build/garageristeriet.zip
-          generate_release_notes: true
+          name: theme-zip
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: garageristeriet.zip
+          fail_on_unmatched_files: true

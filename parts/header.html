@@ -1,31 +1,30 @@
-<!-- wp:group {"className":"gr-header","style":{"position":{"type":"sticky","top":"0px"},"spacing":{"padding":{"top":"0.875rem","bottom":"0.875rem","left":"var:preset|spacing|30","right":"var:preset|spacing|30"}}},"layout":{"type":"constrained"}} -->
-<div class="wp-block-group gr-header" style="padding-top:0.875rem;padding-right:var(--wp--preset--spacing--30);padding-bottom:0.875rem;padding-left:var(--wp--preset--spacing--30)">
-	<!-- wp:group {"align":"wide","layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"space-between"}} -->
-	<div class="wp-block-group alignwide">
-		<!-- wp:group {"style":{"spacing":{"blockGap":"0.75rem"}},"layout":{"type":"flex","flexWrap":"nowrap"}} -->
-		<div class="wp-block-group">
-			<!-- wp:site-logo {"width":44,"shouldSyncIcon":false} /-->
+<!-- wp:group {"tagName":"header","className":"gr-header","style":{"spacing":{"padding":{"left":"0","right":"0"}}},"layout":{"type":"default"}} -->
+<header class="wp-block-group gr-header" style="padding-left:0;padding-right:0"><!-- wp:paragraph {"className":"gr-strip"} -->
+<p class="gr-strip">Vi rister onsdag · vi sender torsdag og mandag</p>
+<!-- /wp:paragraph -->
 
-			<!-- wp:site-title {"level":0} /-->
-		</div>
-		<!-- /wp:group -->
+<!-- wp:group {"align":"wide","style":{"spacing":{"padding":{"top":"var:preset|spacing|20","bottom":"var:preset|spacing|20"},"blockGap":"var:preset|spacing|50"}},"layout":{"type":"flex","flexWrap":"nowrap","verticalAlignment":"center"}} -->
+<div class="wp-block-group alignwide" style="padding-top:var(--wp--preset--spacing--20);padding-bottom:var(--wp--preset--spacing--20)"><!-- wp:site-logo {"width":180} /-->
 
-		<!-- wp:group {"style":{"spacing":{"blockGap":"var:preset|spacing|30"}},"layout":{"type":"flex","flexWrap":"nowrap"}} -->
-		<div class="wp-block-group">
-			<!-- wp:navigation {"overlayMenu":"mobile","icon":"menu","layout":{"type":"flex","justifyContent":"right"},"style":{"spacing":{"blockGap":"var:preset|spacing|30"}}} -->
-				<!-- wp:navigation-link {"label":"Kaffe","url":"/#kaffe","kind":"custom"} /-->
+<!-- wp:navigation {"className":"gr-nav","overlayMenu":"mobile","layout":{"type":"flex","justifyContent":"left","flexWrap":"wrap"},"style":{"spacing":{"blockGap":"var:preset|spacing|30"}}} -->
+<!-- wp:navigation-link {"label":"Kaffen","url":"/#kaffen","kind":"custom"} /-->
+<!-- wp:navigation-link {"label":"Risteriet","url":"/#rist","kind":"custom"} /-->
+<!-- wp:navigation-link {"label":"Abonnement","url":"/#abonnement","kind":"custom"} /-->
+<!-- wp:navigation-link {"label":"Om os","url":"/#om","kind":"custom"} /-->
+<!-- wp:navigation-link {"label":"Butikken","url":"/#butik","kind":"custom"} /-->
+<!-- wp:navigation-link {"label":"Erhverv","url":"/#erhverv","kind":"custom"} /-->
+<!-- /wp:navigation -->
 
-				<!-- wp:navigation-link {"label":"Om os","url":"/#om-os","kind":"custom"} /-->
+<!-- wp:group {"style":{"layout":{"selfStretch":"fill","flexSize":null},"spacing":{"blockGap":"var:preset|spacing|20"}},"layout":{"type":"flex","justifyContent":"right","flexWrap":"nowrap"}} -->
+<div class="wp-block-group"><!-- wp:paragraph {"className":"gr-small"} -->
+<p class="gr-small"><a href="/min-konto/">Min konto</a></p>
+<!-- /wp:paragraph -->
 
-				<!-- wp:navigation-link {"label":"Ristning","url":"/#ristning","kind":"custom"} /-->
-
-				<!-- wp:navigation-link {"label":"Kontakt","url":"/#kontakt","kind":"custom"} /-->
-			<!-- /wp:navigation -->
-
-			<!-- wp:woocommerce/mini-cart {"hasHiddenPrice":true} /-->
-		</div>
-		<!-- /wp:group -->
-	</div>
-	<!-- /wp:group -->
-</div>
+<!-- wp:buttons -->
+<div class="wp-block-buttons"><!-- wp:button {"className":"is-style-outline"} -->
+<div class="wp-block-button is-style-outline"><a class="wp-block-button__link wp-element-button" href="/kurv/">Kurv</a></div>
+<!-- /wp:button --></div>
+<!-- /wp:buttons --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group --></header>
 <!-- /wp:group -->

@@ -1,64 +1,143 @@
 <?php
 /**
- * GarageRisteriet – tema-funktioner.
+ * GarageRisteriet - blocktheme opsætning.
  *
- * @package garageristeriet
+ * @package GarageRisteriet
  */
 
-defined( 'ABSPATH' ) || exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+define( 'GR_VERSION', '1.2.0' );
 
 /**
- * Tema-opsætning: WooCommerce-support og editor-styles.
+ * Temaunderstøttelse.
  */
-function garageristeriet_setup() {
-	add_theme_support( 'woocommerce' );
+function gr_setup() {
+	add_theme_support( 'title-tag' );
+	add_theme_support( 'post-thumbnails' );
+	add_theme_support( 'responsive-embeds' );
+	add_theme_support( 'html5', array( 'search-form', 'gallery', 'caption', 'style', 'script' ) );
+	add_editor_style( 'style.css' );
 
-	// Sørg for at supplerende CSS også gælder i blok-editoren.
-	add_editor_style( 'assets/css/garageristeriet.css' );
+	// WooCommerce.
+	add_theme_support( 'woocommerce', array(
+		'thumbnail_image_width' => 800,
+		'single_image_width'    => 1400,
+		'product_grid'          => array( 'default_columns' => 4, 'min_columns' => 1, 'max_columns' => 4 ),
+	) );
+	add_theme_support( 'wc-product-gallery-zoom' );
+	add_theme_support( 'wc-product-gallery-lightbox' );
+	add_theme_support( 'wc-product-gallery-slider' );
 
 	load_theme_textdomain( 'garageristeriet', get_template_directory() . '/languages' );
 }
-add_action( 'after_setup_theme', 'garageristeriet_setup' );
+add_action( 'after_setup_theme', 'gr_setup' );
 
 /**
- * Frontend-assets: stylesheet og minimal vanilla JS til sticky header.
+ * Stilark.
  */
-function garageristeriet_enqueue_assets() {
-	$version = wp_get_theme()->get( 'Version' );
-
-	wp_enqueue_style(
-		'garageristeriet',
-		get_theme_file_uri( 'assets/css/garageristeriet.css' ),
-		array(),
-		$version
-	);
-
-	wp_enqueue_script(
-		'garageristeriet-header',
-		get_theme_file_uri( 'assets/js/garageristeriet.js' ),
-		array(),
-		$version,
-		array(
-			'strategy'  => 'defer',
-			'in_footer' => true,
-		)
-	);
+function gr_styles() {
+	wp_enqueue_style( 'garageristeriet', get_stylesheet_uri(), array(), GR_VERSION );
 }
-add_action( 'wp_enqueue_scripts', 'garageristeriet_enqueue_assets' );
+add_action( 'wp_enqueue_scripts', 'gr_styles' );
 
 /**
- * Registrér pattern-kategorien "GarageRisteriet".
+ * Egen kategori til temaets patterns.
  */
-function garageristeriet_register_pattern_category() {
-	register_block_pattern_category(
-		'garageristeriet',
-		array(
+function gr_pattern_category() {
+	if ( function_exists( 'register_block_pattern_category' ) ) {
+		register_block_pattern_category( 'garageristeriet', array(
 			'label'       => __( 'GarageRisteriet', 'garageristeriet' ),
-			'description' => __( 'Sektioner til GarageRisteriets onepager-forside.', 'garageristeriet' ),
-		)
-	);
+			'description' => __( 'Sektioner fra onepager-designet.', 'garageristeriet' ),
+		) );
+	}
 }
-add_action( 'init', 'garageristeriet_register_pattern_category' );
+add_action( 'init', 'gr_pattern_category' );
 
-// Automatiske opdateringer fra GitHub Releases.
-require get_template_directory() . '/inc/updater.php';
+/**
+ * Produktgrid: 3 op paa desktop.
+ */
+function gr_loop_columns() {
+	return 4;
+}
+add_filter( 'loop_shop_columns', 'gr_loop_columns' );
+
+/**
+ * Danske knaptekster i WooCommerce-loopet.
+ */
+function gr_add_to_cart_text() {
+	return __( 'Læg i kurv', 'garageristeriet' );
+}
+add_filter( 'woocommerce_product_add_to_cart_text', 'gr_add_to_cart_text' );
+
+/**
+ * Ingen Google Fonts udefra (GDPR) - fonte hostes lokalt via theme.json.
+ */
+function gr_remove_remote_fonts() {
+	remove_action( 'wp_enqueue_scripts', 'wp_enqueue_webfonts' );
+}
+add_action( 'init', 'gr_remove_remote_fonts' );
+
+/**
+ * Saetter temaets eget logo som sitelogo, hvis der ikke allerede er valgt et.
+ */
+function gr_default_logo() {
+	if ( get_theme_mod( 'custom_logo' ) ) {
+		return;
+	}
+
+	$file = get_template_directory() . '/assets/logo/garageristeriet-lockup-black.png';
+	if ( ! file_exists( $file ) ) {
+		return;
+	}
+
+	$existing = get_posts( array(
+		'post_type'   => 'attachment',
+		'name'        => 'garageristeriet-lockup-black',
+		'numberposts' => 1,
+		'fields'      => 'ids',
+	) );
+
+	if ( $existing ) {
+		set_theme_mod( 'custom_logo', $existing[0] );
+		return;
+	}
+
+	require_once ABSPATH . 'wp-admin/includes/image.php';
+	require_once ABSPATH . 'wp-admin/includes/file.php';
+	require_once ABSPATH . 'wp-admin/includes/media.php';
+
+	$upload = wp_upload_bits( 'garageristeriet-lockup-black.png', null, file_get_contents( $file ) );
+	if ( ! empty( $upload['error'] ) ) {
+		return;
+	}
+
+	$attachment_id = wp_insert_attachment( array(
+		'post_mime_type' => 'image/png',
+		'post_title'     => 'GarageRisteriet',
+		'post_status'    => 'inherit',
+	), $upload['file'] );
+
+	if ( is_wp_error( $attachment_id ) ) {
+		return;
+	}
+
+	wp_update_attachment_metadata( $attachment_id, wp_generate_attachment_metadata( $attachment_id, $upload['file'] ) );
+	set_theme_mod( 'custom_logo', $attachment_id );
+}
+add_action( 'after_switch_theme', 'gr_default_logo' );
+
+/**
+ * Dansk prisformat: "94,00 kr." i stedet for "kr. 94,00".
+ * Fjern denne funktion, hvis butikken skal have kr. foran igen.
+ */
+function gr_price_format( $format, $currency_pos ) {
+	return '%2$s&nbsp;%1$s';
+}
+add_filter( 'woocommerce_price_format', 'gr_price_format', 10, 2 );
+
+require_once get_template_directory() . '/inc/updater.php';
+require_once get_template_directory() . '/inc/grind.php';
+require_once get_template_directory() . '/inc/loop-variations.php';

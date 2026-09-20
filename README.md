@@ -1,88 +1,57 @@
-# GarageRisteriet – WordPress blok-tema
+# GarageRisteriet — WordPress-blocktheme
 
-Nordisk, minimalistisk Full Site Editing-tema til GarageRisteriet – dansk specialkaffe-risteri med WooCommerce-shop. 100 % native blokeditor: ingen page builders, ingen jQuery, intet build-step.
+Warmt nordisk / japandi FSE-tema til GarageRisteriet, specialkafferisteri i
+Hornslet. Onepager-forside, WooCommerce-klar, selvhostede fonte, ingen
+eksterne CDN-kald (GDPR).
 
-## Krav
+- **Temamappe:** `garageristeriet` — mappenavnet ER temaets identitet og maa
+  aldrig omdoebes. En omdoebning er en ny installation.
+- **Repo-rod = temarod.** `style.css` ligger i roden.
 
-- WordPress 6.5+
-- WooCommerce (nyeste version, blok-baseret kurv/checkout)
-- PHP 7.4+
+## Fonte — laes foer foerste release
 
-## Installation
+`assets/fonts/` indeholder kun Source Serif 4 og en README. Temaet forventer
+desuden Source Sans 3 (to filer) og Anton, plus OFL-licenserne. Se
+`assets/fonts/README.md` for filnavne og kilder. Uden dem falder temaet
+tilbage paa systemfonte — det virker, men ser forkert ud.
 
-1. Download `garageristeriet.zip` (fra seneste [GitHub Release](https://github.com/kristianwind/garageristeriet-theme/releases) eller byg den selv, se nedenfor).
-2. Gå til **Udseende → Temaer → Tilføj nyt → Upload tema** og vælg zip-filen.
-3. Aktivér temaet.
-4. Sæt forsiden op: **Indstillinger → Læsning → En statisk side** og vælg din forside. Forsiden bruger automatisk `front-page`-templaten med alle onepager-sektioner.
-5. WooCommerce-siderne (Shop, Kurv, Kasse, Min konto) oprettes af WooCommerce selv og bruger temaets blok-templates.
+Myriad Pro og Impact er brandets skrifter i trykt materiale, men er
+proprietaere desktop-licenser og maa ikke ligge i dette repo.
 
-## Onepager-struktur
+## Opdatering
 
-Forsiden er bygget af block patterns i kategorien **GarageRisteriet**:
+Temaet opdaterer sig selv via WordPress' `Update URI` (WP 6.1+):
 
-| Sektion | Pattern | Anker |
-|---|---|---|
-| Hero | `garageristeriet/hero` | – |
-| Kaffe / shop | `garageristeriet/shop` | `#kaffe` |
-| Om os | `garageristeriet/om-os` | `#om-os` |
-| Ristningsprocessen | `garageristeriet/ristning` | `#ristning` |
-| Testimonial | `garageristeriet/testimonial` | – |
-| Kontakt / nyhedsbrev | `garageristeriet/kontakt` | `#kontakt` |
+    Update URI: https://github.com/kristianwind/garageristeriet-theme
 
-Header-navigationen linker til ankrene med smooth scroll, og `scroll-margin-top` kompenserer for den sticky header.
+`inc/updater.php` haenger paa filteret `update_themes_github.com`, laeser
+`tag_name` fra `releases/latest` og bygger selv download-adressen:
 
-## Redigér sektioner i Site Editor
+    https://github.com/kristianwind/garageristeriet-theme/releases/download/<tag>/garageristeriet.zip
 
-1. Gå til **Udseende → Editor → Skabeloner → Forside**.
-2. Hver sektion ligger som et pattern. Klik ind i en sektion og redigér tekst, billeder og produkter direkte.
-3. Vil du omarrangere eller tilføje sektioner: åbn blok-indsætteren, fanen **Mønstre → GarageRisteriet**, og træk sektionerne ind i den rækkefølge du vil.
-4. Header og footer redigeres under **Udseende → Editor → Mønstre → Skabelondele**.
-5. Farver, typografi og spacing styres centralt via **Udseende → Editor → Stilarter** (alt er defineret i `theme.json`).
+Tre ting der ikke maa aendres uden at kaeden knaekker:
 
-**Tips:**
+1. Guarden `'garageristeriet' !== $theme_stylesheet` — filteret deles med alle
+   andre temaer der opdaterer fra github.com.
+2. Ved feed-fejl returneres den **installerede** version med tom `package`.
+   Returneres `false`, forsvinder temaet fra opdaterings-transienten, og
+   "Aktivér auto-opdateringer" forsvinder fra skaermen.
+3. Zippens oeverste mappe skal hedde `garageristeriet`. Ellers installerer
+   WordPress en kopi ved siden af den gamle, og den gamle bliver aktiv.
+   Workflowet asserterer det.
 
-- Hero-billedet udskiftes ved at vælge cover-blokken og klikke **Erstat**. Behold klassen `gr-hero`, så billedet fortsat trækkes op under den transparente header.
-- Nyhedsbrevs-placeholderen i kontaktsektionen erstattes med din formular-blok fra fx Mailchimp, MailPoet eller Brevo.
-- Produktgrid'et i `#kaffe` er et WooCommerce **Product Collection**-block – antal kolonner og produkter ændres i blokkens sidebar.
+## Release
 
-## Teknik
+    # ret Version: i style.css og GR_VERSION i functions.php
+    git tag v1.2.0 && git push --tags
 
-- **theme.json (v3)** er sandheden: farvepalette, lokalt hostede fonte (Fraunces + Inter, OFL-licens, ingen Google Fonts CDN), fluid typografi med `clamp()`, spacing-skala og blok-styles.
-- **Templates**: `front-page`, `index`, `page`, `404` samt blok-baserede WooCommerce-templates `single-product` og `archive-product`. Kurv/checkout leveres som blokke af WooCommerce og er stylet via temaet.
-- **Sticky header**: transparent over hero, solid baggrund ved scroll – håndteret af ~40 linjer vanilla JS i `assets/js/garageristeriet.js`.
-- Alle funktioner er prefixet `garageristeriet_`, al output escapes.
+`.github/workflows/release.yml`: `test` (ugated) tjekker at versionen matcher
+tagget, koerer `php -l` og bygger zippen. `publish` er gated med
+`github.server_url == 'https://github.com'`, saa tags ikke ogsaa laver en halv
+release paa Gitea-spejlet.
 
-## Release-flow (automatiske opdateringer fra GitHub)
+## Verifikation
 
-Temaet opdaterer sig selv via GitHub Releases. WordPress læser `Update URI`-headeren i `style.css` og spørger `inc/updater.php`, som tjekker GitHub API'et (cachet 12 timer i en transient).
-
-Sådan udgiver du en ny version:
-
-```bash
-# 1. Bump versionen i style.css (fx 1.0.0 → 1.1.0)
-# 2. Commit
-git add style.css
-git commit -m "Bump version til 1.1.0"
-
-# 3. Tag og push – tagget SKAL matche versionen med v-prefix
-git tag v1.1.0
-git push origin main --tags
-```
-
-Herefter:
-
-4. GitHub Actions (`.github/workflows/release.yml`) bygger en ren `garageristeriet.zip` (uden `.git`/`.github`, med korrekt mappenavn `garageristeriet/`) og uploader den som release-asset. Workflowet fejler bevidst, hvis versionen i `style.css` ikke matcher tagget.
-5. Inden for ~12 timer (eller straks via **Kontrolpanel → Opdateringer → Søg igen**) ser WordPress den nye version og tilbyder opdatering som ethvert andet tema.
-
-Falder updateren tilbage til GitHubs zipball (hvis asset'et mangler), omdøber `upgrader_source_selection`-hooket automatisk den udpakkede mappe til `garageristeriet/`, så opdateringen ikke lander i en forkert mappe.
-
-## Byg zip lokalt
-
-```bash
-zip -rq garageristeriet.zip garageristeriet \
-  -x 'garageristeriet/.git/*' 'garageristeriet/.github/*' '*.DS_Store'
-```
-
-## Licens
-
-Tema: GPL-2.0-or-later. Fonte: Fraunces og Inter, begge SIL Open Font License (se `assets/fonts/`).
+`ci/update-smoke.sh` beviser kaeden ved at lade WordPress selv hente:
+installér 0.9.0, se at opdateringen tilbydes, opdatér, og assertér at temaet
+stadig er aktivt og at der er **praecis én** mappe der starter med temanavnet.
