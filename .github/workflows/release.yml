@@ -12,6 +12,15 @@ permissions:
 
 jobs:
   release:
+    # Kun på GitHub. action-gh-release udgiver til den forge der KØRER den, og
+    # dette repo ligger også på gitea.nolimit.dk med Actions slået til — uden
+    # denne linje laver hvert tag en halvfærdig release derovre ved siden af
+    # den rigtige, tavst, mens GitHub ser fin ud. Temaets updater henter fra
+    # GitHub Releases, så det skal være de eneste der findes.
+    #
+    # Hele jobbet kan gates, fordi workflowen kun trigger på tags: der er
+    # ingen PR-CI her som en gate ellers ville slå fra sammen med den.
+    if: github.server_url == 'https://github.com'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
