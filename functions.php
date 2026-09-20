@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'GR_VERSION', '1.3.2' );
+define( 'GR_VERSION', '1.3.3' );
 
 /**
  * Temaunderstøttelse.
@@ -27,7 +27,9 @@ function gr_setup() {
 		'single_image_width'    => 1400,
 		'product_grid'          => array( 'default_columns' => 4, 'min_columns' => 1, 'max_columns' => 4 ),
 	) );
-	add_theme_support( 'wc-product-gallery-zoom' );
+	// 1.3.3: ingen zoom. Lup-paa-hover er en desktop-gestus der ikke findes paa
+	// en telefon, og den staar i vejen for et klik paa billedet. Lightbox og
+	// slider bliver: de virker begge steder.
 	add_theme_support( 'wc-product-gallery-lightbox' );
 	add_theme_support( 'wc-product-gallery-slider' );
 
