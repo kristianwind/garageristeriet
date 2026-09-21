@@ -8,7 +8,7 @@ Description: Warmt nordisk / japandi blocktheme (FSE) til GarageRisteriet - spec
 Requires at least: 6.5
 Tested up to: 6.8
 Requires PHP: 7.4
-Version: 1.3.10
+Version: 1.3.11
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: garageristeriet
@@ -654,3 +654,35 @@ letter-spacing:var(--ls-button);text-transform:uppercase;color:var(--text-strong
 /* Kortet naar det er hentet. inset:0 frem for width/height, saa den daekker
    flisen uanset hvilken hoejde raekken endte med. */
 .gr-map iframe{position:absolute;inset:0;display:block;width:100%;height:100%;border:0}
+
+
+/* ═ 1.3.11: maerkerne i footeren som blokke ════════════════
+   Raekken var et wp:html-felt med styling i style="" paa hver enkelt span.
+   Nu er den rigtige blokke — Gruppe, Gruppe, Billede — saa den kan redigeres
+   i Site Editoren uden at nogen skal ind i HTML. Prisen er at alt det der
+   stod inline skal staa her i stedet.
+
+   To ting er maalt frem og ikke gaettet:
+
+   1. box-sizing. .gr-mark saetter height:30px, og temaet har ingen global
+      border-box. En Gruppe-blok faar border-box fra blok-bibliotekets CSS,
+      en <figure> goer ikke — saa pladen med EU-bladet blev 30px hoej og de
+      syv andre 32. Klassen faar den derfor selv.
+
+   2. Billedblokken. core saetter .wp-block-image img{height:auto}, som er
+      praecis lige saa specifik som .gr-mark--plate img. Hvem der vinder
+      afhaenger saa af indlaesningsraekkefoelgen, og det er ikke noget at
+      bygge paa — derfor figure.gr-mark--plate img, som er en tand mere
+      specifik og vinder uanset.
+
+   Blok-udgaven har i oevrigt ikke blockGap-fejlen fra 1.3.10: den ydre gruppe
+   er flex-layout, og der bruger WordPress gap i stedet for margin paa
+   soeskende. Fejlen findes kun i flow-layout. */
+.gr-mark{box-sizing:border-box}
+.gr-mark-row figure.wp-block-image,.gr-mark--leaf figure.wp-block-image{margin:0}
+.gr-mark--plate{background:#fff;border-color:transparent;padding:0 7px;min-width:0}
+figure.gr-mark--plate img,.gr-mark--plate figure.wp-block-image img{display:block;height:20px;width:auto;max-width:none}
+.gr-mark--leaf{padding:0 8px}
+.gr-mark--oe{padding:0 12px}
+.gr-mark__code{margin:0;color:var(--gr-cocoa-800);font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.gr-marks__right{margin-left:auto}
