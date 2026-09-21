@@ -8,7 +8,7 @@ Description: Warmt nordisk / japandi blocktheme (FSE) til GarageRisteriet - spec
 Requires at least: 6.5
 Tested up to: 6.8
 Requires PHP: 7.4
-Version: 1.3.5
+Version: 1.3.6
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: garageristeriet
@@ -523,3 +523,32 @@ background:var(--gr-paper-050);color:var(--gr-espresso-950);
 border:1px solid var(--gr-paper-050);border-radius:var(--radius-sm);
 min-height:44px;padding:0 var(--space-7);cursor:pointer;align-self:flex-start}
 .gr-news button:hover{background:var(--gr-latte-400);border-color:var(--gr-latte-400)}
+
+/* ─ 1.3.6: headeren sidder fast, og menuen scroller bloedt ──────────────
+   Headeren HAVDE position:sticky (linje 74) og sad alligevel ikke fast.
+   Maalt: efter 1200px scroll stod dens top paa -1200, altsaa helt vaek.
+   Aarsagen er ikke overflow nogen steder — det er at indpakningen
+   <header class="wp-block-template-part"> er praecis 172px hoej, samme som
+   headeren selv. Et sticky element kan kun bevaege sig inden for sin
+   foraelders kasse, og med nul plads opfoerer det sig som static. Derfor
+   flyttes klistringen ud paa indpakningen, som sidder direkte i
+   .wp-site-blocks og dermed har hele siden at bevaege sig i. */
+.wp-site-blocks > header.wp-block-template-part{position:sticky;top:0;z-index:30}
+.gr-header{position:static}
+
+/* Bloed scroll til ankrene i menuen. prefers-reduced-motion respekteres:
+   en lang animeret scroll er ubehagelig for nogle, og det er et
+   tilgaengelighedskrav, ikke en smagssag. */
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* Og saa maa headeren ikke laegge sig oven paa det man klikkede sig hen til.
+   192px er headerens hoejde paa den SMALLESTE skaerm, hvor annoncestriben
+   braekker til to linjer (35px -> 55px). Der bruges én vaerdi og ikke et
+   media query, fordi brudpunktet afhaenger af stribens TEKSTLAENGDE og
+   dermed flytter sig, naar teksten aendres. Paa desktop giver det 20px
+   ekstra luft — usynligt. Den modsatte fejl, 20px for lidt, skjuler
+   overskriften bag headeren.
+   Maalt efter aendringen: 115-234px luft under headeren paa alle fem
+   ankre i 1440, 768 og 390px. */
+.wp-site-blocks main section[id]{scroll-margin-top:192px}
