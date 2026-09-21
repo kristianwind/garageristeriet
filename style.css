@@ -8,7 +8,7 @@ Description: Warmt nordisk / japandi blocktheme (FSE) til GarageRisteriet - spec
 Requires at least: 6.5
 Tested up to: 6.8
 Requires PHP: 7.4
-Version: 1.3.7
+Version: 1.3.8
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: garageristeriet
@@ -579,3 +579,23 @@ animation:gr-rise linear both;animation-timeline:view();
 animation-range:entry 0% entry 55%}
 @keyframes gr-rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 }}
+
+/* ─ 1.3.8: antalsfeltet ─────────────────────────────────────────────────
+   Paa /vare/colombia-to-go/ var feltet 84x75px mod 59x46 paa en variabel
+   vare. Browserens egen matcher (DevTools-protokollen, ikke et gaet) pegede
+   paa to regler fra WooCommerce Blocks:
+
+     .wc-block-add-to-cart-form .input-text          padding:.9rem 1.1rem
+     .wp-block-...add-to-cart-form .quantity .qty    box-sizing:content-box
+
+   content-box er det afgoerende: de 17,6px padding laegges UDEN PAA bredden,
+   og min-height:44px faar 28,8px padding oveni. Derfor vokser feltet i begge
+   retninger paa netop de sider, der bruger blok-formularen.
+
+   Maalt efter: 63x44 paa grupperet, variabelt og simpelt produkt — ens, og
+   samme hoejde som knappen ved siden af. */
+.woocommerce .quantity .qty,
+.woocommerce .wp-block-woocommerce-add-to-cart-form .quantity .qty,
+.woocommerce .wc-block-add-to-cart-form .input-text.qty{
+box-sizing:border-box;width:4.5em;min-width:0;min-height:44px;height:44px;
+padding:0 6px;text-align:center;font-size:var(--fs-sm);line-height:1}

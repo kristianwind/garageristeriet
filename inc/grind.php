@@ -83,13 +83,51 @@ function gr_product_has_grind_attribute( $product ) {
 }
 
 /**
- * Viser feltet paa den almindelige produktside ogsaa — men kun hvis
- * formaling ikke allerede er en variations-egenskab.
+ * Kan dette produkt overhovedet males?
+ *
+ * Feltet blev foer vist paa ALT der ikke havde formaling som variation, og
+ * det lovede noget der ikke findes: paa /vare/colombia-to-go/ stod der en
+ * formalingsvaelger paa en brewbag. En brewbag er faerdigpakket.
+ *
+ * @param WC_Product $product Produktet.
+ * @return bool
+ */
+function gr_product_takes_grind( $product ) {
+	if ( ! $product instanceof WC_Product ) {
+		return false;
+	}
+
+	// Et grupperet produkt er ikke én kaffe, det er en raekke kaffer, og
+	// formularen sender ét gr_formaling for dem alle. Valget ville blive
+	// haeftet paa hver linje i gruppen paa én gang.
+	if ( $product->is_type( array( 'grouped', 'external' ) ) ) {
+		return false;
+	}
+
+	// Kategorier hvor formaling ikke giver mening. Brewbags er faerdigpakkede,
+	// et gavekort er ikke kaffe. Filtrerbar, saa listen kan aendres uden at
+	// roere temaet.
+	$excluded = apply_filters( 'gr_grind_excluded_categories', array( 'brewbags', 'gavekort' ) );
+	if ( $excluded && has_term( $excluded, 'product_cat', $product->get_id() ) ) {
+		return false;
+	}
+
+	// Har den formaling som rigtig variation, ville kunden se to vaelgere.
+	if ( gr_product_has_grind_attribute( $product ) ) {
+		return false;
+	}
+
+	return true;
+}
+
+/**
+ * Viser feltet paa den almindelige produktside — men kun hvor det giver
+ * mening. Se gr_product_takes_grind().
  */
 function gr_grind_field_single() {
 	global $product;
 
-	if ( ! $product instanceof WC_Product || gr_product_has_grind_attribute( $product ) ) {
+	if ( ! gr_product_takes_grind( $product ) ) {
 		return;
 	}
 
