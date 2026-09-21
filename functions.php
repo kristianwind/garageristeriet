@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'GR_VERSION', '1.3.8' );
+define( 'GR_VERSION', '1.3.9' );
 
 /**
  * Temaunderstøttelse.
@@ -73,6 +73,29 @@ function gr_styles() {
 	wp_enqueue_style( 'garageristeriet', get_stylesheet_uri(), array(), GR_VERSION );
 }
 add_action( 'wp_enqueue_scripts', 'gr_styles' );
+
+/**
+ * Kortet paa forsiden.
+ *
+ * Kun paa forsiden, fordi det er det eneste sted markup'en findes. Skal et
+ * .gr-map bruges paa en anden skabelon, skal betingelsen udvides her — ellers
+ * bliver knappen siddende og laver ingenting, hvilket ser ud som en doed knap
+ * og ikke som en manglende fil.
+ */
+function gr_map_script() {
+	if ( ! is_front_page() ) {
+		return;
+	}
+
+	wp_enqueue_script(
+		'gr-map',
+		get_template_directory_uri() . '/assets/js/map.js',
+		array(),
+		GR_VERSION,
+		array( 'strategy' => 'defer', 'in_footer' => true )
+	);
+}
+add_action( 'wp_enqueue_scripts', 'gr_map_script' );
 
 /**
  * Egen kategori til temaets patterns.
