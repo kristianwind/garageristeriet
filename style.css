@@ -8,7 +8,7 @@ Description: Warmt nordisk / japandi blocktheme (FSE) til GarageRisteriet - spec
 Requires at least: 6.5
 Tested up to: 6.8
 Requires PHP: 7.4
-Version: 1.3.6
+Version: 1.3.7
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: garageristeriet
@@ -552,3 +552,30 @@ html{scroll-behavior:smooth}
    Maalt efter aendringen: 115-234px luft under headeren paa alle fem
    ankre i 1440, 768 og 390px. */
 .wp-site-blocks main section[id]{scroll-margin-top:192px}
+
+/* ─ 1.3.7: sektioner toner ind under scroll ─────────────────────────────
+   Uden JavaScript. Temaet indlaeser ingen scripts, og en dekoration er en
+   daarlig grund til at begynde. animation-timeline:view() goer det i ren CSS
+   og koerer uden om hovedtraaden.
+
+   🔴 Raekkefoelgen er det vigtige. Indholdet er synligt SOM UDGANGSPUNKT, og
+   animationen laegges kun oveni inde i @supports. Den omvendte konstruktion —
+   opacity:0 i grundtilstanden og en animation til at taende den — viser en
+   TOM side i enhver browser uden support. Firefox har det stadig kun i
+   preview (MDN browser-compat-data, tjekket 2026-09-21); Chrome 115+ og
+   Safari 26+ har det. Firefox ser bare ingen animation, og det er usynligt.
+
+   prefers-reduced-motion respekteres, og det er ikke pynt: indhold der
+   bevaeger sig under scroll er en kendt kilde til ubehag.
+
+   Hero'en er undtaget med vilje. Den er det foerste man ser, og den er
+   sidens LCP-element — starter det paa opacity:0, maaler browseren LCP
+   senere, end billedet faktisk stod der. En animation maa ikke koste
+   maalingen af hvor hurtig siden er. */
+@media (prefers-reduced-motion:no-preference){
+@supports (animation-timeline:view()){
+.wp-site-blocks main section[id]:not(.gr-hero){
+animation:gr-rise linear both;animation-timeline:view();
+animation-range:entry 0% entry 55%}
+@keyframes gr-rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+}}
